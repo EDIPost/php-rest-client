@@ -1,7 +1,7 @@
 <?php
     namespace EdipostService\Client;
     
-    /** @XmlRoot(Consignor) */
+    /** @XmlRoot(consignor) */
     class Consignor extends Party{
         
         /** @XmlAttribute(string, id) */

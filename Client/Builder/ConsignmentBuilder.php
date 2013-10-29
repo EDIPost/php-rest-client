@@ -22,17 +22,17 @@
 
 
         public function setConsignorID($id){
-            $this->consignorId = $id;
+            $this->consignorId = strval( $id );
             return $this;
         }
         
         public function setConsigneeID($id){
-            $this->consigneeId = $id;
+            $this->consigneeId = strval( $id );
             return $this;    
         }
         
         public function setProductID( $id ){
-            $this->productId = $id;
+            $this->productId = strval( $id );
             return $this;
         }
         

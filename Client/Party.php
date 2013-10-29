@@ -10,7 +10,7 @@
         /** @XmlElement(string, companyName) */
         public $companyName;
         /** @XmlElement(string, customerNumber) */
-        public $customerNumber;
+        public $customerNumber = "0";
         /** @XmlElement(string, country) */
         public $country;
 
