@@ -78,7 +78,6 @@
     class EdipostService implements iEdipostService{
         private $conn = null;
         private $connection_status = null;
-        private $pdf_folder = "";
         
         
         /**
@@ -87,30 +86,12 @@
         * @param mixed $apikey
         * @return EdipostService
         */
-        public function __construct($apikey = null, $pdf_folder = null, $apiurl = 'http://api.edipost.no'){
+        public function __construct($apikey = null, $apiurl = 'http://api.edipost.no'){
             if ( isset($apikey) ){
                 $this->connect($apikey, $apiurl);            
             }
-            
-            $this->setPDF_folder($pdf_folder);
         } 
 
-
-        /**
-        * Sets a folder to store the PDF prints
-        * 
-        * @param string $folder
-        */
-        public function setPDF_folder( $folder = null ){
-            if ( !isset($folder)  ){
-                $folder = 'tmp/relable/pdf';
-            }
-             
-            if ( !is_dir( $folder ) ){
-                @mkdir( $folder, 0777, true );    
-            }
-            $this->pdf_folder = $folder;
-        }
 
         /**
         * fetches the default consignor 
@@ -147,8 +128,6 @@
         }
         
         
-      
-        
         /**
         * Creates a Consignee 
         * 
@@ -172,6 +151,7 @@
             return $party;
         }
         
+
         /**
         * Creates a consignment
         * 
@@ -207,7 +187,7 @@
         * 
         * @param mixed $consignment_id
         */
-        public function printConsignment($consignment_id, $filename = null, $report = null ){
+        public function printConsignment($consignment_id, $report = null ){
             $url = "/consignment/$consignment_id/print";
             
             if ( isset($report) ){
@@ -217,12 +197,7 @@
 
             $response = $this->conn->get( $url, null, $headers );
             
-            $filename = ( isset($filename) ? md5($filename) : md5($consignment_id) ).".pdf";
-            if ( file_put_contents($this->pdf_folder . "/" . $filename, $response) === false ){
-                // Error
-            }
-            
-            return $this->pdf_folder . "/" . $filename;
+            return $response;
         }
 
         
