@@ -12,16 +12,15 @@
     define("PARTY_CONSIGNEE", "consignee");
     define("PARTY_CONSIGNOR", "consignor");
     
-
-    $path = substr(__FILE__, 0, strrpos(__FILE__, "\\"));
+    $path = dirname(__FILE__);
 
     // Autoload manual important files
     $Autoload = array();
-    $Autoload[] = $path . "\\Utils\\lexa-xml-serialization.php";
-    $Autoload[] = $path . "\\Client\\Builder\\PartyBuilder.php";
-    $Autoload[] = $path . "\\ServiceConnection\\ServiceConnection.php";
-    $Autoload[] = $path . "\\ServiceConnection\\Communication.php";
-    $Autoload[] = $path . "\\Client\\Party.php";
+    $Autoload[] = $path . DIRECTORY_SEPARATOR . 'Utils' . DIRECTORY_SEPARATOR . 'lexa-xml-serialization.php';
+    $Autoload[] = $path . DIRECTORY_SEPARATOR . 'Client' . DIRECTORY_SEPARATOR . 'Builder' . DIRECTORY_SEPARATOR . 'PartyBuilder.php';
+    $Autoload[] = $path . DIRECTORY_SEPARATOR . 'ServiceConnection' . DIRECTORY_SEPARATOR . 'ServiceConnection.php';
+    $Autoload[] = $path . DIRECTORY_SEPARATOR . 'ServiceConnection' . DIRECTORY_SEPARATOR . 'Communication.php';
+    $Autoload[] = $path . DIRECTORY_SEPARATOR . 'Client' . DIRECTORY_SEPARATOR . 'Party.php';
 
 
     foreach ( $Autoload as &$a ){
@@ -34,7 +33,7 @@
     $objects = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator( $path ),\ RecursiveIteratorIterator::SELF_FIRST);
     foreach($objects as $name => $object){
         if ( substr($object->getBasename(), strpos($object->getBasename(), ".")) == '.php' ) { 
-            require_once( $object->getPath() . '\\'. $object->getBasename()  );
+            require_once( $object->getPath() . DIRECTORY_SEPARATOR . $object->getBasename()  );
         }
     }
 ?>
