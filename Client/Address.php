@@ -4,11 +4,11 @@
   
   class Address{
     /** @XmlElement(string, address) */
-    private $address;
+    public $address;
     /** @XmlElement(string, zipCode) */
-    private $zipCode;
+    public $zipCode;
     /** @XmlElement(string, city) */
-    private $city;
+    public $city;
 
 
     public function getAddress() {

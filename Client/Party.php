@@ -1,32 +1,30 @@
 <?php
     namespace EdipostService\Client;
+    
+    
 
-    require_once( "\\".__NAMESPACE__."\\Address.php" );
-    require_once( "\\".__NAMESPACE__."\\Contact.php" );
-    require_once( "\\EdipostService\ServiceConnection\\Communication.php" );
 
-    /** @XmlRoot(Consignee) */
-    class Consignee extends \EdipostService\ServiceConnection\Communication{
-        /** @XmlAttribute(int) */
-        private $ID;
+    /** @XmlRoot(Party) */
+    class Party extends \EdipostService\ServiceConnection\Communication{
+        public $ID;
         /** @XmlElement(string, companyName) */
-        private $companyName;
-        /** @XmlElement(string, customerNumer) */
-        private $customerNumber;
+        public $companyName;
+        /** @XmlElement(string, customerNumber) */
+        public $customerNumber;
         /** @XmlElement(string, country) */
-        private $country;
+        public $country;
 
         /** @var EdipostService\Client\Address */
         /** @XmlElement(Address, streetAddress) */
-        private $streetAddress = null;
+        public $streetAddress = null;
 
         /** @var EdipostService\Client\Address */
         /** @XmlElement(Address, postAddress) */
-        private $postAddress = null;
+        public $postAddress = null;
 
         /** @var EdipostService\Client\Contact */
         /** @XmlElement(Contact, contact) */
-        private $contact = null;
+        public $contact = null;
         
 
         public function getID() {
@@ -114,7 +112,7 @@
 
         public function remove() {
             //return $this->Locator.resolve( ConsigneeService.class ).removeConsignee( getID() );
-        }
+        } 
     }    
 
 ?>

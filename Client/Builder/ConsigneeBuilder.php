@@ -2,12 +2,6 @@
     namespace EdipostService\Client\Builder;
     use \EdipostService\Client as Client;
     
-    require_once( "\\".__NAMESPACE__."\\..\\Address.php" );
-    require_once( "\\".__NAMESPACE__."\\..\\Contact.php" );
-    require_once( "\\".__NAMESPACE__."\\..\\Consignee.php" );
-    
-    
-
     class ConsigneeBuilder{
         private $id;
         private $companyName;
@@ -22,6 +16,7 @@
         private $contactName;
         private $contactPhone;
         private $contactCellPhone;
+        private $contactTelefax;
         private $contactEmail;
 
 
@@ -91,7 +86,11 @@
 
 
         public function setContactName( $contactName ) {
-            $this->contactName = $contactName;
+            if ( !isset($contactName) || empty($contactName) ){
+                $this->contactName = "";    
+            }else{
+                $this->contactName = substr($contactName,0,30);
+            }
             return $this;
         }
 
@@ -104,6 +103,11 @@
 
         public function setContactCellPhone( $contactCellPhone ) {
             $this->contactCellPhone = $contactCellPhone;
+            return $this;
+        }
+        
+        public function setContactTelefax( $contactTelefax ) {
+            $this->contactTelefax = $contactTelefax;
             return $this;
         }
 
@@ -130,6 +134,7 @@
             $contact->setTelephone($this->contactPhone);
             $contact->setCellphone($this->contactCellPhone);
             $contact->setEmail($this->contactEmail);
+            $contact->setTelefax($this->contactTelefax);
             
             $consignee = new Client\Consignee();
             $consignee->setID($this->id);
@@ -142,6 +147,8 @@
             
             return $consignee;
         }
+        
+        
     }   
     
 ?>

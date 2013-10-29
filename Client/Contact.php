@@ -1,12 +1,18 @@
 <?php
     namespace EdipostService\Client;
 
+    /** @XmlRoot(Contact) */
     class Contact{
-        private $name;
-        private $telephone;
-        private $cellphone;
-        private $telefax;
-        private $email;
+        /** @XmlElement(string, name) */
+        public $name;
+        /** @XmlElement(string, telephone) */
+        public $telephone;
+        /** @XmlElement(string, cellphone) */
+        public $cellphone;
+        /** @XmlElement(string, telefax) */
+        public $telefax;
+        /** @XmlElement(string, email) */
+        public $email;
 
 
         public function getName() {
