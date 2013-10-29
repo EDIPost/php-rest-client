@@ -13,11 +13,11 @@
         private $postZip;
         private $postCity;
         private $country;
-        private $contactName;
-        private $contactPhone;
-        private $contactCellPhone;
-        private $contactTelefax;
-        private $contactEmail;
+        private $contactName = '';
+        private $contactPhone = '';
+        private $contactCellPhone = '';
+        private $contactTelefax = '';
+        private $contactEmail = '';
 
 
 
