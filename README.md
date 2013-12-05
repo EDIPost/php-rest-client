@@ -1,29 +1,61 @@
-php-rest-client
-===============
-
-PHP Client library for public API
+PHP wrapper for Edipost REST api
+==================================
 
 
+Connect to service
+-------------------
+```
+$api = new EdipostService( $_POST['apiKey'] );
+```
 
-init
-====
-require_once( "EdipostService/EdipostService.php" );
-$api = new EdipostService/EdipostService( $apikey );
+
+Create consignee
+-----------------
+```
+$builder = new ConsigneeBuilder();
+
+$consignee = $builder
+	->setCompanyName( $_POST['companyName'] )
+	->setCustomerNumber( $_POST['customerNumber'] )
+	->setPostAddress( $_POST['postAddress'] )
+	->setPostZip( $_POST['postZip'] )
+	->setPostCity( $_POST['postCity'] )
+	->setStreetAddress( $_POST['streetAddress'] )
+	->setStreetZip( $_POST['streetZip'] )
+	->setStreetCity( $_POST['streetCity'] )
+	->setContactName( $_POST['contactName'] )
+	->setContactEmail( $_POST['contactEmail'] )
+	->setContactPhone( $_POST['contactPhone'] )
+	->setContactCellPhone( $_POST['contactCellphone'] )
+	->setContactTelefax( $_POST['contactTelefax'] )
+	->setCountry( $_POST['country'] )
+	->build();
+
+$newConsignee = $api->createConsignee($consignee);
+```
 
 
-Best practice
-=============
-require_once( "EdipostService/EdipostService.php" );
-class DAO extends \EdipostService\EdipostService {
+Create consignment
+------------------
+```
+$builder = new ConsignmentBuilder();
 
-   public function __construct( $apikey, $apiurl = 'http://api.edipost.no' ){
-   
-      parent::__construct($apikey, null, $apiurl);
-   
-   }
-  
-  ...  
-  your datastore methods.  
-   ...
-   
-}
+$consignment = $builder
+	->setConsignorID( $_POST['consignorId'] )
+	->setConsigneeID( $newConsignee->ID )
+	->setProductID( $_POST['productId'] )
+	->setTransportInstructions( $_POST['transportInstructions'] )
+	->setContentReference( $_POST['contentReference'] )
+	->setInternalReference( $_POST['internalReference'] )
+	->addItem( new Item( $_POST['weight'], $_POST['height'], $_POST['width'], $_POST['length']) )
+	->build();
+
+$newConsignment = $api->createConsignment( $consignment );
+```
+
+
+Print consignment
+-----------------
+```
+$pdf = $api->printConsignment( $newConsignment->id );
+```
