@@ -126,6 +126,47 @@
 
             return $consignor;
         }
+
+
+		/**
+		 * fetches the available producs
+		 *
+		 * @return \EdipostService\Client\Consignor
+		 */
+		public function getProducts($consignorID){
+			$url = "/consignee/$consignorID/products";
+			$headers = array( "Accept: application/vnd.edipost.collection+xml" );
+
+			$xml = $this->conn->get( $url, null, $headers );
+
+
+			if ( !$xml ){
+				return null;
+			}
+
+
+			$products = array();
+
+			foreach( $xml->xpath('/collection/entry') as $product ) {
+				$newProduct = new \EdipostService\Client\Product();
+				$newProduct->setId( (string) $product->attributes()->id );
+				$newProduct->setName( (string) $product->attributes()->name );
+				$newProduct->setStatus( (string) $product->status );
+
+				foreach( $product->xpath( 'services/service' ) as $service ) {
+					$newService = new \EdipostService\Client\Service();
+					$newService->setId( (string) $service->attributes()->id );
+					$newService->setName( (string) $service->attributes()->name );
+
+					$newProduct->addService( $newService );
+				}
+
+				$products[] = $newProduct;
+			}
+
+
+			return $products;
+		}
         
         
         /**
