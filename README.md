@@ -1,6 +1,8 @@
 PHP wrapper for Edipost REST api
 ==================================
 
+Please take a look at the folder tests for more examples.
+
 
 Connect to service
 -------------------
