@@ -1,6 +1,8 @@
 PHP wrapper for Edipost REST api
 ==================================
 
+Warning: This is an **alpha** release, and the API can be changed at any time.
+
 Please take a look at the folder tests for more examples.
 
 
