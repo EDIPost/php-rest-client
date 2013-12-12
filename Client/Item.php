@@ -23,6 +23,11 @@
         * @XmlElement(double, length) 
         */
         protected $length;
+
+		/**
+		 * @XmlElement(double, cost)
+		 */
+		protected $cost;
         
         protected $itemNumber;
 
@@ -48,6 +53,16 @@
         public function setLength( $l ){
             $this->length = $l;
         }
+
+		public function setCost( $cost ) {
+			$this->cost = $cost;
+		}
+
+
+		public function getCost() {
+			return $this->cost;
+		}
+
         
         /**
         * Sets the connotenumber

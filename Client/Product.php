@@ -1,86 +1,61 @@
 <?php
-    namespace EdipostService\Client;
+namespace EdipostService\Client;
 
-    /** @XmlRoot(product) */
-    class Product{
-        /** @XmlAttribute(int, id) */
-        private $id;
-		private $name;
-		private $status;
-
-        /** @XmlElement(Services, services) */
-        private $services;
+/** @XmlRoot(product) */
+class Product {
+	/** @XmlAttribute(int, id) */
+	private $id;
+	private $name;
+	private $status;
 
 
-        public function addService($service){
-            $this->services[] = $service;
-        }
+	/** @XmlElement(Services, services) */
+	private $services = array();
 
 
-		/**
-		 * @param mixed $id
-		 */
-		public function setId( $id ) {
-			$this->id = $id;
-		}
+	public function addService( $service ) {
+		$this->services[ ] = $service;
+	}
 
 
-		/**
-		 * @return mixed
-		 */
-		public function getId() {
-			return $this->id;
-		}
+	public function addServices( $services ) {
+		$this->services = $services;
+	}
 
 
-		/**
-		 * @param mixed $name
-		 */
-		public function setName( $name ) {
-			$this->name = $name;
-		}
+	public function getServices() {
+		return $this->services;
+	}
 
 
-		/**
-		 * @return mixed
-		 */
-		public function getName() {
-			return $this->name;
-		}
+	public function setId( $id ) {
+		$this->id = (int)$id;
+	}
 
 
-		/**
-		 * @param mixed $services
-		 */
-		public function setServices( $services ) {
-			$this->services = $services;
-		}
+	public function getId() {
+		return $this->id;
+	}
 
 
-		/**
-		 * @return mixed
-		 */
-		public function getServices() {
-			return $this->services ? $this->services : array();
-		}
+	public function setName( $name ) {
+		$this->name = $name;
+	}
 
 
-		/**
-		 * @param mixed $status
-		 */
-		public function setStatus( $status ) {
-			$this->status = $status;
-		}
+	public function getName() {
+		return $this->name;
+	}
 
 
-		/**
-		 * @return mixed
-		 */
-		public function getStatus() {
-			return $this->status;
-		}
+	public function setStatus( $status ) {
+		$this->status = $status;
+	}
 
 
+	public function getStatus() {
+		return $this->status;
+	}
+}
 
-    }
 ?>

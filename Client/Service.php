@@ -6,6 +6,7 @@
         /** @XmlAttribute(int, id) */
         private $id;
 		private $name;
+		private $cost;
 
 
 		/**
@@ -37,6 +38,22 @@
 		 */
 		public function getName() {
 			return $this->name;
+		}
+
+
+		/**
+		 * @param mixed $cost
+		 */
+		public function setCost( $cost ) {
+			$this->cost = $cost;
+		}
+
+
+		/**
+		 * @return mixed
+		 */
+		public function getCost() {
+			return $this->cost;
 		}
     }
 ?>

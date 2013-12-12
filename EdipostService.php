@@ -221,7 +221,51 @@
             }
             return $consignment;
         }
-        
+
+
+		/**
+		 * Calculate postage for a consignment
+		 *
+		 * @param \EdipostService\Client\Consignment $consignment
+		 * @return integer
+		 */
+		public function calculatePostage($consignment){
+			$url = "/consignment/postage";
+
+			$headers = array(
+				'Accept: application/vnd.edipost.consignment+xml',
+				'Content-Type: application/vnd.edipost.consignment+xml'
+			);
+
+			$xml = $this->conn->post( $url, new \SimpleXMLElement( $consignment->xml_serialize()), $headers );
+
+			if ( !$xml instanceof \SimpleXMLElement ){
+				return false;
+			}
+
+
+			/*
+			// TODO - Add cost from services
+			$j = 0;
+			foreach( $xml->product->services->service as $service ){
+				$services = $consignment->product->getServices();
+
+				$services{$j}->setCost( reset($service->cost) );
+				$j++;
+			}
+			*/
+
+
+			$i = 0;
+			foreach( $xml->items->item as $k => $v ){
+				$consignment->items->items{$i}->setCost( reset($v->cost) );
+				$i++;
+			}
+
+
+			return $consignment;
+		}
+
         
         /**
         * fetches the PDF data

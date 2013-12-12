@@ -28,12 +28,14 @@
         
         public $id;
         
-        
-        
+
         public function addItems($items){
             $this->items = $items;
         }
-        
 
+
+		public function getItems() {
+			return $this->items;
+		}
     }
 ?>

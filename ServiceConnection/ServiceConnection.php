@@ -66,7 +66,7 @@
             if ( $type == REST_GET && $response->code = 200 ){
                 return $this->_create_xml_object($response->data);
             }
-            if ( $type == REST_CREATE && $response->code == 201 ){
+            if ( $type == REST_CREATE && ($response->code == 200 || $response->code == 201) ){
                 return new \SimpleXMLElement($response->data);    
             }
 
@@ -100,7 +100,7 @@
             $info = curl_getinfo($ch);
             $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-            if( $info['http_code'] != 201 ) {
+            if( $info['http_code'] != 200 && $info['http_code'] != 201 ) {
                 curl_close($ch);
                 throw new CommunicationException(curl_error($ch) . " ::: " . $data);
             }
