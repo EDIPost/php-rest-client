@@ -5,7 +5,7 @@ require_once( 'EdipostService.php' );
 use EdipostService\EdipostService;
 
 
-class EdipostTest extends PHPUnit_Framework_TestCase {
+class ProductTest extends PHPUnit_Framework_TestCase {
 	private $api;
 
 

@@ -7,7 +7,7 @@ use EdipostService\Client\Item;
 use EdipostService\EdipostService;
 
 
-class EdipostTest extends PHPUnit_Framework_TestCase {
+class ConsignmentTest extends PHPUnit_Framework_TestCase {
 	private $api;
 
 
