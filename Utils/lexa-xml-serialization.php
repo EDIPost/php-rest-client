@@ -275,7 +275,7 @@
         // Serialization
         
         static function serialize($obj) {
-            $doc = new \DOMDocument();
+            $doc = new \DOMDocument('1.0', 'utf-8');
             $root = $doc->createElement(ClassMetaStore::getMeta($obj)->getXmlRoot());
             self::serializeObject($obj, $root);
             $doc->appendChild($root);
