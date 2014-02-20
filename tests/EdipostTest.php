@@ -78,7 +78,7 @@ class EdipostTest extends PHPUnit_Framework_TestCase {
 		$this->assertGreaterThan( 0, count( $result->items->items ) );
 
 		// Make sure all items has a cost
-		foreach( $consignment->items->items as $item ) {
+		foreach( $result->items->items as $item ) {
 			$this->assertGreaterThan( 1, $item->getCost() );
 		}
 	}

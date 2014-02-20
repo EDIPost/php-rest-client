@@ -191,6 +191,31 @@
             $party = $this->_buildParty($xml, PARTY_CONSIGNEE);
             return $party;
         }
+
+
+		/**
+		 * Get a Consignee by ID
+		 *
+		 * @param \EdipostService\Client\Consignee $consignee
+		 * @return Consignee
+		 */
+		public function getConsignee( $consigneeId ){
+			$url = "/consignee/$consigneeId";
+
+			$headers = array(
+				'Accept: application/vnd.edipost.party+xml'
+			);
+
+			$xml = $this->conn->get( $url, null, $headers );
+
+			if ( !$xml instanceof \SimpleXMLElement ){
+				return false;
+			}
+
+			$party = $this->_buildParty($xml, PARTY_CONSIGNEE);
+
+			return $party;
+		}
         
 
         /**
