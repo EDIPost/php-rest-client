@@ -8,6 +8,9 @@
 		private $name;
 		private $cost;
 
+		/** @XmlElement(Properties, properties) */
+		private $properties = array();
+
 
 		/**
 		 * @param mixed $id
@@ -54,6 +57,14 @@
 		 */
 		public function getCost() {
 			return $this->cost;
+		}
+
+
+		/**
+		 * @param mixed $properties
+		 */
+		public function setProperties( $properties ) {
+			$this->properties = $properties;
 		}
     }
 ?>

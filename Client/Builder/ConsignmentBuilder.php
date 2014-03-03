@@ -11,8 +11,8 @@
         protected $transportInstructions;
         protected $internalReference;
         protected $productId;
-        
         protected $items = array();
+        protected $services = array();
                   
 
 
@@ -55,6 +55,31 @@
             $this->items[] = $item;
             return $this;
         }
+
+        public function addService( $serviceId, $keyValue = array() ) {
+            $service = new \EdipostService\Client\Service();
+            $service->setId( $serviceId );
+
+            // Add properties, if any
+            if( count( $keyValue ) > 0 ) {
+                $properties = new \EdipostService\Client\Properties();
+                
+                foreach( $keyValue as $key => $value) {
+                    $property = new \EdipostService\Client\Property();
+                    $property->setKey( $key );
+                    $property->setValue( $value );
+
+                    $properties->addProperty( $property );
+                }
+
+                $service->setProperties( $properties );
+            }
+
+
+            $this->services[] = $service;
+
+            return $this;
+        }
         
         
         
@@ -72,8 +97,19 @@
             $product = new \EdipostService\Client\Product();
             $product->setId( $this->productId );
             
+
+            
+            // Add services
             $services = new \EdipostService\Client\Services();
+
+            foreach( $this->services as $service ) {
+                $services->addService( $service );
+            }
+
             $product->addServices($services);
+
+
+
             $consignment->product = $product;
             
             $items = new \EdipostService\Client\Items();
@@ -85,13 +121,7 @@
             $consignment->transportInstructions = ( empty($this->transportInstructions) ? "." : substr($this->transportInstructions,0,500) );
             $consignment->internalReference = ( empty($this->internalReference) ? "." : substr($this->internalReference,0,35) );
             
-            
-            
 
-            /*
-            $consignment->consigneeId = $this->consigneeId;
-            $consignment->consignorId = $this->consignorId;
-              */
             return $consignment; 
         }
         
