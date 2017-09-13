@@ -1,20 +1,18 @@
-PHP wrapper for Edipost REST api
-==================================
+#PHP wrapper for Edipost REST api
 
-Warning: This is an **alpha** release, and the API can be changed at any time.
 
 Please take a look at the folder tests for more examples.
 
 
-Connect to service
--------------------
+##Connect to service
+
 ```
 $api = new EdipostService( $_POST['apiKey'] );
 ```
 
 
-Create consignee
------------------
+##Create consignee
+
 ```
 $builder = new ConsigneeBuilder();
 
@@ -39,8 +37,8 @@ $newConsignee = $api->createConsignee($consignee);
 ```
 
 
-Create consignment
-------------------
+##Create consignment
+
 ```
 $builder = new ConsignmentBuilder();
 
@@ -52,14 +50,15 @@ $consignment = $builder
 	->setContentReference( $_POST['contentReference'] )
 	->setInternalReference( $_POST['internalReference'] )
 	->addItem( new Item( $_POST['weight'], $_POST['height'], $_POST['width'], $_POST['length']) )
+	->addService( 55, array( 'COD_AMOUNT' => '1500', 'COD_REFERENCE' => '12345678901' ) )
 	->build();
 
 $newConsignment = $api->createConsignment( $consignment );
 ```
 
 
-Print consignment
------------------
+##Print consignment
+
 ```
 $pdf = $api->printConsignment( $newConsignment->id );
 ```
