@@ -1,17 +1,17 @@
-#PHP wrapper for Edipost REST api
+# PHP wrapper for Edipost REST api
 
 
 Please take a look at the folder tests for more examples.
 
 
-##Connect to service
+## Connect to service
 
 ```
 $api = new EdipostService( $_POST['apiKey'] );
 ```
 
 
-##Create consignee
+## Create consignee
 
 ```
 $builder = new ConsigneeBuilder();
@@ -37,7 +37,7 @@ $newConsignee = $api->createConsignee($consignee);
 ```
 
 
-##Create consignment
+## Create consignment
 
 ```
 $builder = new ConsignmentBuilder();
@@ -57,7 +57,7 @@ $newConsignment = $api->createConsignment( $consignment );
 ```
 
 
-##Print consignment
+## Print consignment
 
 ```
 $pdf = $api->printConsignment( $newConsignment->id );
