@@ -310,8 +310,25 @@
             return $response;
         }
 
-        
-        
+
+		/**
+		 * fetches the ZPL data
+		 *
+		 * @param mixed $consignment_id
+		 */
+		public function printConsignmentZpl($consignment_id, $report = null ){
+			$url = "/consignment/$consignment_id/print";
+
+			if ( isset($report) ){
+				$url .= "?report=".$report;
+			}
+			$headers = array( "Accept: text/vnd.edipost.consignment+zpl" );
+
+			$response = $this->conn->get( $url, null, $headers );
+
+			return $response;
+		}
+
         
         /**
         * PRVATE FUNCTIONS
