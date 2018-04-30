@@ -1,18 +1,19 @@
 <?php
 
-require_once( 'EdipostService.php' );
+require_once( 'src/EdipostService.php' );
 
 use EdipostService\Client\Builder\ConsigneeBuilder;
 use EdipostService\Client\Builder\ConsignmentBuilder;
 use EdipostService\Client\Item;
 use EdipostService\EdipostService;
+use PHPUnit\Framework\TestCase;
 
 
-class ConsigneeTest extends PHPUnit_Framework_TestCase {
+class ConsigneeTest extends TestCase {
 	private $api;
 
 
-	public function __construct() {
+	public function setUp() {
 		$this->api = new EdipostService( '32a2da7ecac520df81e626671ff882a7bdd5d161' );
 	}
 
@@ -59,23 +60,23 @@ class ConsigneeTest extends PHPUnit_Framework_TestCase {
 
 
 	public function testGetConsignee() {
-		$consignee = $this->api->getConsignee( 1510077 );
+		$consignee = $this->api->getConsignee( 3517608 );
 
 		$this->assertGreaterThan( 0, $consignee->getID() );
-		$this->assertEquals( 'Mariann Orvedal', $consignee->getCompanyName() );
+		$this->assertEquals( 'Folco AS', $consignee->getCompanyName() );
 		$this->assertEquals( 'NO', $consignee->getCountry() );
 
-		$this->assertEquals( 'Vikveien 7', $consignee->getStreetAddress()->getAddress() );
+		$this->assertEquals( 'Hundeveien 123', $consignee->getStreetAddress()->getAddress() );
 		$this->assertEquals( '1337', $consignee->getStreetAddress()->getZipCode() );
-		$this->assertEquals( 'Vik i Sogn', $consignee->getStreetAddress()->getCity() );
+		$this->assertEquals( 'Sandvika', $consignee->getStreetAddress()->getCity() );
 
-		$this->assertEquals( 'Vikveien 7', $consignee->getPostAddress()->getAddress() );
+		$this->assertEquals( 'Hundeveien 123', $consignee->getPostAddress()->getAddress() );
 		$this->assertEquals( '1337', $consignee->getPostAddress()->getZipCode() );
-		$this->assertEquals( 'Vik i Sogn', $consignee->getPostAddress()->getCity() );
+		$this->assertEquals( 'Sandvika', $consignee->getPostAddress()->getCity() );
 
-		$this->assertEquals( 'Mariann Orvedal', $consignee->getContact()->getName() );
-		$this->assertEquals( '97141810', $consignee->getContact()->getTelephone() );
-		$this->assertEquals( '97141810', $consignee->getContact()->getCellphone() );
+		$this->assertEquals( 'Kari Kontakt', $consignee->getContact()->getName() );
+		$this->assertEquals( '11111111', $consignee->getContact()->getTelephone() );
+		$this->assertEquals( '22222222', $consignee->getContact()->getCellphone() );
 		$this->assertEquals( '', $consignee->getContact()->getEmail() );
 		$this->assertEquals( '', $consignee->getContact()->getTelefax() );
 	}

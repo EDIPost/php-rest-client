@@ -1,17 +1,18 @@
 <?php
 
-require_once( 'EdipostService.php' );
+require_once( 'src/EdipostService.php' );
 
 use EdipostService\Client\Builder\ConsignmentBuilder;
 use EdipostService\Client\Item;
 use EdipostService\EdipostService;
+use PHPUnit\Framework\TestCase;
 
 
-class ConsignmentTest extends PHPUnit_Framework_TestCase {
+class ConsignmentTest extends TestCase {
 	private $api;
 
 
-	public function __construct() {
+	public function setUp() {
 		$this->api = new EdipostService( '32a2da7ecac520df81e626671ff882a7bdd5d161' );
 	}
 

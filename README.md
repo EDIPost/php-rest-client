@@ -4,6 +4,13 @@
 Please take a look at the folder tests for more examples.
 
 
+## Getting started
+```
+composer install
+composer update
+```
+
+
 ## Connect to service
 
 ```

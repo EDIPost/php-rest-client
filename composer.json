@@ -1,0 +1,13 @@
+{
+  "name": "edipost/php_rest_client",
+  "description": "Edipost API client library",
+  "authors": [
+    {
+      "name": "Mathias Bjerke",
+      "email": "mathias@verida.no"
+    }
+  ],
+  "require-dev": {
+    "phpunit/phpunit": "^6"
+  }
+}
