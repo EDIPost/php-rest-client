@@ -1,24 +1,38 @@
-# PHP wrapper for Edipost REST api
+# PHP Client Library
+> PHP Client Library for Edipost REST API
+
+[![GitHub release](https://img.shields.io/badge/release-1.0.0-blue.svg)](https://github.com/EDIPost/php-rest-client/releases)
+[![Language](https://img.shields.io/badge/language-PHP-brightgreen.svg)](http://www.php.net)
+
+Client library for Edipost REST API. The client library supports the most common functionality in the API. 
 
 
-Please take a look at the folder tests for more examples.
+## Installation
+
+### Prerequisites
+
+* PHP
+* mod_curl
 
 
-## Getting started
+## Development setup
+
+### Run unit tests
 ```
 composer install
-composer update
+./vendor/bin/phpunit tests
 ```
 
+## Examples
 
-## Connect to service
+### Connect to service
 
 ```
 $api = new EdipostService( $_POST['apiKey'] );
 ```
 
 
-## Create consignee
+### Create consignee
 
 ```
 $builder = new ConsigneeBuilder();
@@ -44,7 +58,7 @@ $newConsignee = $api->createConsignee($consignee);
 ```
 
 
-## Create consignment
+### Create consignment
 
 ```
 $builder = new ConsignmentBuilder();
@@ -64,8 +78,12 @@ $newConsignment = $api->createConsignment( $consignment );
 ```
 
 
-## Print consignment
+### Print consignment
 
 ```
 $pdf = $api->printConsignment( $newConsignment->id );
 ```
+
+## Meta
+
+Mathias Bjerke – [@mathbje](https://twitter.com/mathbje) – mathias@verida.no
