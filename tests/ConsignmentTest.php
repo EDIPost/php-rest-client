@@ -25,7 +25,7 @@ class ConsignmentTest extends TestCase {
 
 		$consignment = $builder
 			->setConsignorID( 3311 )
-			->setConsigneeID( 1510077 )
+			->setConsigneeID( 3517608 )
 			->setProductID( 8 )
 			->setTransportInstructions( '' )
 			->setContentReference( '' )
@@ -53,7 +53,7 @@ class ConsignmentTest extends TestCase {
 
 		$consignment = $builder
 			->setConsignorID( 3311 )
-			->setConsigneeID( 1510077 )
+			->setConsigneeID( 3517608 )
 			->setProductID( 8 )
 			->setTransportInstructions( '' )
 			->setContentReference( '' )

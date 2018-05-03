@@ -20,23 +20,31 @@ class ProductTest extends TestCase {
 	 */
 	public function testProducts() {
 		// Get products
-		$products = $this->api->getProducts( 1510077 );
+		$products = $this->api->getProducts( 3517608 );
 		$this->assertGreaterThan( 0, count( $products ) );
 
+
 		// Make sure we have the product 'Klimanøytral Servicepakke' and that all properties is set
-		$servicepakken = reset( array_filter( $products, function ( $product ) {
+		$servicepakken = array_filter( $products, function ( $product ) {
 			return $product->getId() == 8;
-		} ) );
+		} );
+
+		$servicepakken = reset( $servicepakken );
+
 		$this->assertNotNull( $servicepakken );
 		$this->assertEquals( 8, $servicepakken->getId() );
 		$this->assertEquals( 'Klimanøytral Servicepakke', $servicepakken->getName() );
 		$this->assertEquals( 'Available', $servicepakken->getStatus() );
 		$this->assertGreaterThan( 0, count( $servicepakken->getServices() ) );
 
+
 		// Make sure we have the service 'Cash On Delivery' and that all properties is set
-		$cod = reset( array_filter( $servicepakken->getServices(), function ( $service ) {
+		$cod = array_filter( $servicepakken->getServices(), function ( $service ) {
 			return $service->getId() == 55;
-		} ) );
+		} );
+
+		$cod = reset( $cod );
+
 		$this->assertNotNull( $cod );
 		$this->assertEquals( 55, $cod->getId() );
 		$this->assertEquals( 'Cash On Delivery', $cod->getName() );
