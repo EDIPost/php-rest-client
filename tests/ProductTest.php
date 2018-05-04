@@ -104,7 +104,7 @@ class ProductTest extends TestCase {
 			)
 		);
 
-		// Removed sender zip code to provoke an error
+		// Removed sender zip code to provoke an error response
 		$this->api->getAvailableProducts( '', 'NO', '2805', 'NO', $items );
 	}
 }

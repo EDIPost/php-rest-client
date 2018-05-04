@@ -7,6 +7,7 @@ use EdipostService\Client\Builder\ConsigneeBuilder;
 use EdipostService\Client\Builder\ConsignmentBuilder;
 use EdipostService\Client\Item;
 use EdipostService\EdipostService;
+use EdipostService\ServiceConnection\WebException;
 use PHPUnit\Framework\TestCase;
 
 
@@ -57,6 +58,20 @@ class ConsigneeTest extends TestCase {
 		$this->assertEquals( 'Kolbu', $newConsignee->postAddress->city );
 
 		$this->assertEquals( 'MyContact', $newConsignee->contact->name );
+	}
+
+
+	/*
+	 * Test create consignee with incorrect parameters
+	 */
+	public function testCreateConsigneeWithIncorrectParameters() {
+		$this->expectException( WebException::class);
+
+		// Give wrong/missing parameters to provoke an error response
+		$builder = new ConsigneeBuilder();
+		$consignee = $builder->build();
+
+		$this->api->createConsignee( $consignee );
 	}
 
 
