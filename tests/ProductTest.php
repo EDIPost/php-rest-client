@@ -4,6 +4,7 @@ require_once( 'src/EdipostService.php' );
 require_once( 'Properties.php' );
 
 use EdipostService\EdipostService;
+use EdipostService\ServiceConnection\WebException;
 use PHPUnit\Framework\TestCase;
 
 
@@ -53,7 +54,7 @@ class ProductTest extends TestCase {
 
 
 	/*
-	 * Get products
+	 * Get available products
 	 */
 	public function testGetAvailableProducts() {
 		$items = array(
@@ -71,7 +72,7 @@ class ProductTest extends TestCase {
 			)
 		);
 
-		$products = $this->api->getAvailableProducts( 2847, 'NO', '2805', 'NO', $items );
+		$products = $this->api->getAvailableProducts( '2847', 'NO', '2805', 'NO', $items );
 		$this->assertGreaterThan( 0, count( $products ) );
 
 		// Make sure we have the product 'Klimanøytral Servicepakke' and that all properties is set
@@ -85,6 +86,26 @@ class ProductTest extends TestCase {
 		$this->assertEquals( 8, $servicepakken->getId() );
 		$this->assertEquals( 'Klimanøytral Servicepakke', $servicepakken->getName() );
 		$this->assertEquals( 'Available', $servicepakken->getStatus() );
+	}
+
+
+	/*
+	 * Test available products with incorrect parameters
+	 */
+	public function testGetAvailableProductsWithIncorrectParameters() {
+		$this->expectException( WebException::class);
+
+		$items = array(
+			array(
+				'weight' => '9.5',
+				'length' => '10',
+				'width'  => '10',
+				'height' => '10'
+			)
+		);
+
+		// Removed sender zip code to provoke an error
+		$this->api->getAvailableProducts( '', 'NO', '2805', 'NO', $items );
 	}
 }
 

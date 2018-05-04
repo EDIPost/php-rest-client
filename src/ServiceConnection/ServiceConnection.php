@@ -5,7 +5,7 @@
         private $_base = null;
         private $_apikey = null;
 
-        public function __construct( $apiKey, $url ="http://api.edipost.no" ){
+        public function __construct( $apiKey, $url ){
             $this->_base = $url;
             $this->_apikey = $apiKey;
         }
@@ -83,30 +83,36 @@
         * @param string/xml $body
         */
         private function _postRequest( $url, $headers, $body ) {
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $this->_base . $url  );
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-            curl_setopt($ch, CURLOPT_USERPWD, "api:". $this->_apikey);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $body );
-            curl_setopt($ch, CURLOPT_POST, TRUE);
-            curl_setopt($ch, CURLINFO_HEADER_OUT, true);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-            curl_setopt($ch, CURLOPT_ENCODING, '');
-            curl_setopt($ch, CURLOPT_TIMEOUT, 15);
-            //curl_setopt($ch, CURLOPT_VERBOSE, true);
+            $conn = curl_init();
+            curl_setopt($conn, CURLOPT_URL, $this->_base . $url  );
+            curl_setopt($conn, CURLOPT_FOLLOWLOCATION, TRUE);
+            curl_setopt($conn, CURLOPT_USERPWD, "api:". $this->_apikey);
+            curl_setopt($conn, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($conn, CURLOPT_POSTFIELDS, $body );
+            curl_setopt($conn, CURLOPT_POST, TRUE);
+            curl_setopt($conn, CURLINFO_HEADER_OUT, true);
+            curl_setopt($conn, CURLOPT_RETURNTRANSFER, TRUE);
+            curl_setopt($conn, CURLOPT_ENCODING, '');
+            curl_setopt($conn, CURLOPT_TIMEOUT, 15);
 
-            $data = curl_exec($ch);
-            $info = curl_getinfo($ch);
-            $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            // Handle connection errors
+			if( ($data = curl_exec($conn)) === false) {
+				$curlError = curl_error($conn);
+				curl_close($conn);
 
-            if( $info['http_code'] != 200 && $info['http_code'] != 201 ) {
-                curl_close($ch);
-                throw new CommunicationException(curl_error($ch) . " ::: " . $data);
+				throw new CommunicationException( $curlError );
+			}
+
+            $data = curl_exec($conn);
+            $httpStatus = curl_getinfo($conn, CURLINFO_HTTP_CODE);
+			curl_close($conn);
+
+			// Handle HTTP errors
+            if( $httpStatus != 200 && $httpStatus != 201 ) {
+				throw new WebException( $data, $httpStatus );
             }
-            curl_close($ch);
 
-            return new response($http_status, $data);
+            return new response($httpStatus, $data);
         }
 
 
@@ -122,17 +128,23 @@
             curl_setopt($conn, CURLOPT_HTTPHEADER,  $this->_header($headers) );
             curl_setopt($conn, CURLOPT_CUSTOMREQUEST, REST_GET );
 
-
-            if( ($result = curl_exec($conn)) === false) {
+			// Handle connection errors
+            if( ($data = curl_exec($conn)) === false) {
+                $curlError = curl_error($conn);
                 curl_close($conn);
-                throw new CommunicationException(curl_error($conn));
-            }  
-            $http_status = curl_getinfo($conn, CURLINFO_HTTP_CODE);
-            curl_close($conn);
 
+                throw new CommunicationException( $curlError );
+            }
 
+			$httpStatus = curl_getinfo($conn, CURLINFO_HTTP_CODE);
+			curl_close($conn);
 
-            return new response($http_status, $result);
+			// Handle HTTP errors
+			if( $httpStatus != 200 ) {
+				throw new WebException( $data, $httpStatus );
+			}
+
+            return new response($httpStatus, $data);
         }
 
 
