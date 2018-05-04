@@ -86,7 +86,7 @@
         * @param mixed $apikey
         * @return EdipostService
         */
-        public function __construct($apikey = null, $apiurl = 'http://api.edipost.no'){
+        public function __construct($apikey = null, $apiurl = 'https://api.pbshipment.com'){
             if ( isset($apikey) ){
                 $this->connect($apikey, $apiurl);            
             }
