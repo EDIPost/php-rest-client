@@ -1,6 +1,7 @@
 <?php
 
 require_once( 'src/EdipostService.php' );
+require_once( 'Properties.php' );
 
 use EdipostService\Client\Builder\ConsignmentBuilder;
 use EdipostService\Client\Item;
@@ -13,7 +14,7 @@ class ConsignmentTest extends TestCase {
 
 
 	public function setUp() {
-		$this->api = new EdipostService( '32a2da7ecac520df81e626671ff882a7bdd5d161' );
+		$this->api = new EdipostService( Properties::$apiKey );
 	}
 
 
@@ -24,9 +25,9 @@ class ConsignmentTest extends TestCase {
 		$builder = new ConsignmentBuilder();
 
 		$consignment = $builder
-			->setConsignorID( 3311 )
-			->setConsigneeID( 3517608 )
-			->setProductID( 8 )
+			->setConsignorID( Properties::$consignorId )
+			->setConsigneeID( Properties::$consigneeId )
+			->setProductID( Properties::$servicepakkenProductId )
 			->setTransportInstructions( '' )
 			->setContentReference( '' )
 			->setInternalReference( '' )
@@ -52,9 +53,9 @@ class ConsignmentTest extends TestCase {
 		$builder = new ConsignmentBuilder();
 
 		$consignment = $builder
-			->setConsignorID( 3311 )
-			->setConsigneeID( 3517608 )
-			->setProductID( 8 )
+			->setConsignorID( Properties::$consignorId )
+			->setConsigneeID( Properties::$consigneeId )
+			->setProductID( Properties::$servicepakkenProductId )
 			->setTransportInstructions( '' )
 			->setContentReference( '' )
 			->setInternalReference( '' )

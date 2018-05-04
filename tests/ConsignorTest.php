@@ -1,6 +1,7 @@
 <?php
 
 require_once( 'src/EdipostService.php' );
+require_once( 'Properties.php' );
 
 use EdipostService\EdipostService;
 use PHPUnit\Framework\TestCase;
@@ -11,7 +12,7 @@ class ConsignorTest extends TestCase {
 
 
 	public function setUp() {
-		$this->api = new EdipostService( '32a2da7ecac520df81e626671ff882a7bdd5d161' );
+		$this->api = new EdipostService( Properties::$apiKey );
 	}
 
 

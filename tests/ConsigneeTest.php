@@ -1,6 +1,7 @@
 <?php
 
 require_once( 'src/EdipostService.php' );
+require_once( 'Properties.php' );
 
 use EdipostService\Client\Builder\ConsigneeBuilder;
 use EdipostService\Client\Builder\ConsignmentBuilder;
@@ -14,7 +15,7 @@ class ConsigneeTest extends TestCase {
 
 
 	public function setUp() {
-		$this->api = new EdipostService( '32a2da7ecac520df81e626671ff882a7bdd5d161' );
+		$this->api = new EdipostService( Properties::$apiKey );
 	}
 
 
@@ -60,7 +61,7 @@ class ConsigneeTest extends TestCase {
 
 
 	public function testGetConsignee() {
-		$consignee = $this->api->getConsignee( 3517608 );
+		$consignee = $this->api->getConsignee( Properties::$consigneeId );
 
 		$this->assertGreaterThan( 0, $consignee->getID() );
 		$this->assertEquals( 'Folco AS', $consignee->getCompanyName() );
