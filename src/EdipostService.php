@@ -129,11 +129,11 @@
 
 
 		/**
-		 * fetches the available producs
+		 * fetches the available products for a given consignee
 		 *
-		 * @return \EdipostService\Client\Consignor
+		 * @return \EdipostService\Client\Product[]
 		 */
-		public function getProducts($consignorID){
+		public function getProducts( $consignorID ) {
 			$url = "/consignee/$consignorID/products";
 			$headers = array( "Accept: application/vnd.edipost.collection+xml" );
 
@@ -166,6 +166,60 @@
 
 
 			return $products;
+		}
+
+
+		/**
+		 * fetches the available products
+		 *
+		 * @return \EdipostService\Client\Product[]
+		 */
+		public function getAvailableProducts( $fromZipCode, $fromCountryCode, $toZipCode, $toCountryCode, $items ) {
+			$url = "/product?fromZipCode=$fromZipCode&fromCountryCode=$fromCountryCode&toZipCode=$toZipCode&toCountryCode=$toCountryCode" . $this->getItemsUrlString( $items );
+			$headers = array( "Accept: application/vnd.edipost.collection+xml" );
+
+			$xml = $this->conn->get( $url, null, $headers );
+
+
+			if ( !$xml ){
+				return null;
+			}
+
+
+			$products = array();
+
+			foreach( $xml->xpath('/collection/entry') as $product ) {
+				$newProduct = new \EdipostService\Client\Product();
+				$newProduct->setId( (string) $product->attributes()->id );
+				$newProduct->setName( (string) $product->attributes()->name );
+				$newProduct->setStatus( (string) $product->status );
+				$newProduct->setDescription( (string) $product->description );
+				$newProduct->setTransporter( (string) $product->transporter->attributes()->name );
+				$newProduct->setCost( (string) $product->cost );
+				$newProduct->setVat( (string) $product->vat );
+
+				if( $product->serviceId ) {
+					$newService = new \EdipostService\Client\Service();
+					$newService->setId( (string) $product->serviceId );
+					$newProduct->addService( $newService );
+				}
+
+				$products[] = $newProduct;
+			}
+
+
+			return $products;
+		}
+
+
+		private function getItemsUrlString( $items ) {
+			$urlString = '';
+
+			foreach( $items as $item ) {
+				$urlString .= '&item=' . $item['weight'] . '*' . $item['length'] . '*' . $item['width'] . '*' . $item['height'];
+			}
+
+			return $urlString;
 		}
         
         

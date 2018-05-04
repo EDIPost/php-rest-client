@@ -6,7 +6,11 @@ class Product {
 	/** @XmlAttribute(int, id) */
 	private $id;
 	private $name;
+	private $description;
 	private $status;
+	private $transporter;
+	private $cost;
+	private $vat;
 
 
 	/** @XmlElement(Services, services) */
@@ -48,6 +52,16 @@ class Product {
 	}
 
 
+	public function setDescription( $description ) {
+		$this->description = $description;
+	}
+
+
+	public function getDescription() {
+		return $this->description;
+	}
+
+
 	public function setStatus( $status ) {
 		$this->status = $status;
 	}
@@ -56,6 +70,37 @@ class Product {
 	public function getStatus() {
 		return $this->status;
 	}
+
+
+	public function getTransporter() {
+		return $this->transporter;
+	}
+
+
+	public function setTransporter( $transporter ) {
+		$this->transporter = $transporter;
+	}
+
+
+	public function getCost() {
+		return $this->cost;
+	}
+
+
+	public function setCost( $cost ) {
+		$this->cost = $cost;
+	}
+
+
+	public function getVat() {
+		return $this->vat;
+	}
+
+
+	public function setVat( $vat ) {
+		$this->vat = $vat;
+	}
+
 }
 
 ?>
