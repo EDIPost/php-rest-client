@@ -1,7 +1,7 @@
 # PHP Client Library
 > PHP Client Library for Edipost REST API
 
-[![GitHub release](https://img.shields.io/badge/release-1.1.0-blue.svg)](https://github.com/EDIPost/php-rest-client/releases)
+[![GitHub release](https://img.shields.io/badge/release-1.1.1-blue.svg)](https://github.com/EDIPost/php-rest-client/releases)
 [![Language](https://img.shields.io/badge/language-PHP-brightgreen.svg)](http://www.php.net)
 
 Client library for Edipost REST API. The client library supports the most common functionality in the API. 
@@ -24,6 +24,8 @@ composer install
 ```
 
 ## Examples
+
+Take a look at the `examples` folder for more examples. 
 
 ### Connect to service
 
