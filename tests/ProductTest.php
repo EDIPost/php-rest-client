@@ -90,9 +90,9 @@ class ProductTest extends TestCase {
 
 
 	/*
-	 * Test available products with incorrect parameters
+	 * Test available products with missing zip code
 	 */
-	public function testGetAvailableProductsWithIncorrectParameters() {
+	public function testGetAvailableProductsWithMissingZipcode() {
 		$this->expectException( WebException::class);
 
 		$items = array(
@@ -106,6 +106,27 @@ class ProductTest extends TestCase {
 
 		// Removed sender zip code to provoke an error response
 		$this->api->getAvailableProducts( '', 'NO', '2805', 'NO', $items );
+	}
+
+
+	/*
+	 * Test available products with missing zip code
+	 * We should get an empty array, but not crash the program
+	 */
+	public function testGetAvailableProductsWithIncorrectSenderCountry() {
+		$items = array(
+			array(
+				'weight' => '9.5',
+				'length' => '10',
+				'width'  => '10',
+				'height' => '10'
+			)
+		);
+
+		// Set sender country code to 'OM' to make sure we don't get any elements
+		$products = $this->api->getAvailableProducts( '1466', 'OM', '2805', 'NO', $items );
+
+		$this->assertEquals( 0, count( $products ) );
 	}
 }
 

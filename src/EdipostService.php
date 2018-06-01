@@ -180,33 +180,28 @@
 
 			$xml = $this->conn->get( $url, null, $headers );
 
-
-			if ( !$xml ){
-				return null;
-			}
-
-
 			$products = array();
 
-			foreach( $xml->xpath('/collection/entry') as $product ) {
-				$newProduct = new \EdipostService\Client\Product();
-				$newProduct->setId( (string) $product->attributes()->id );
-				$newProduct->setName( (string) $product->attributes()->name );
-				$newProduct->setStatus( (string) $product->status );
-				$newProduct->setDescription( (string) $product->description );
-				$newProduct->setTransporter( (string) $product->transporter->attributes()->name );
-				$newProduct->setCost( (string) $product->cost );
-				$newProduct->setVat( (string) $product->vat );
+			if( $xml && is_object( $xml ) ) {
+				foreach( $xml->xpath('/collection/entry') as $product ) {
+					$newProduct = new \EdipostService\Client\Product();
+					$newProduct->setId( (string) $product->attributes()->id );
+					$newProduct->setName( (string) $product->attributes()->name );
+					$newProduct->setStatus( (string) $product->status );
+					$newProduct->setDescription( (string) $product->description );
+					$newProduct->setTransporter( (string) $product->transporter->attributes()->name );
+					$newProduct->setCost( (string) $product->cost );
+					$newProduct->setVat( (string) $product->vat );
 
-				if( $product->serviceId ) {
-					$newService = new \EdipostService\Client\Service();
-					$newService->setId( (string) $product->serviceId );
-					$newProduct->addService( $newService );
+					if( $product->serviceId ) {
+						$newService = new \EdipostService\Client\Service();
+						$newService->setId( (string) $product->serviceId );
+						$newProduct->addService( $newService );
+					}
+
+					$products[] = $newProduct;
 				}
-
-				$products[] = $newProduct;
 			}
-
 
 			return $products;
 		}
