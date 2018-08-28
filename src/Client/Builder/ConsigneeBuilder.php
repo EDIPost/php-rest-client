@@ -118,7 +118,10 @@
         }
 
 
-        public function build() {
+		/**
+		 * @return Client\Consignee
+		 */
+		public function build() {
             $po = new Client\Address();
             $po->setAddress( $this->postAddress );
             $po->setZipCode( $this->postZip );
@@ -149,6 +152,4 @@
         }
         
         
-    }   
-    
-?>
+    }

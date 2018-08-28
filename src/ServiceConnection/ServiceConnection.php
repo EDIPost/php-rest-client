@@ -12,7 +12,9 @@
 
         /**
         * Checks that we have a connection
-        * 
+		*
+        * @throws CommunicationException
+		* @throws WebException
         */
         public function entryPoint(){
             $response = $this->_execute("/");    
@@ -21,13 +23,16 @@
         }
 
 
-        /**
-        * handle all post requests
-        * 
-        * @param string $url
-        * @param \SimpleXMLElement $xml
-        * @param mixed $headers
-        */
+		/**
+		 * handle all post requests
+		 *
+		 * @param string $url
+		 * @param \SimpleXMLElement $xml
+		 * @param mixed $headers
+		 * @return bool|\SimpleXMLElement|string
+		 * @throws CommunicationException
+		 * @throws WebException
+		 */
         public function post( $url, $xml, $headers ){
             if ( !$xml instanceof \SimpleXMLElement ){
                 return false;
@@ -38,15 +43,16 @@
         }
 
 
-
-
-        /**
-        * Handle all GET requests
-        *         
-        * @param string $url
-        * @param mixed $data
-        * @param mixed $headers
-        */
+		/**
+		 * Handle all GET requests
+		 *
+		 * @param string $url
+		 * @param mixed $data
+		 * @param mixed $headers
+		 * @return bool|\SimpleXMLElement|string
+		 * @throws CommunicationException
+		 * @throws WebException
+		 */
         public function get( $url, $data = null, $headers = null ){
             $response = $this->_execute($url, REST_GET, $data, $headers);
 
@@ -54,23 +60,23 @@
         }
 
 
-
-        /**
-        * format the response
-        * 
-        * @param mixed $response
-        * @param mixed $type
-        * @return \SimpleXMLElement
-        */
+		/**
+		 * format the response
+		 *
+		 * @param mixed $response
+		 * @param mixed $type
+		 * @return bool|\SimpleXMLElement|string
+		 */
         private function _response( $response, $type ){
             if ( $type == REST_GET && $response->code = 200 ){
                 return $this->_create_xml_object($response->data);
             }
+
             if ( $type == REST_CREATE && ($response->code == 200 || $response->code == 201) ){
                 return new \SimpleXMLElement($response->data);    
             }
 
-            return false;       
+            return false;
         }
 
 
@@ -100,12 +106,11 @@
 		 *
 		 * @param string $url
 		 * @param mixed $headers
-		 * @param null $body
 		 * @return response
 		 * @throws CommunicationException
 		 * @throws WebException
 		 */
-		private function _getRequest( $url, $headers, $body = null ) {
+		private function _getRequest($url, $headers) {
 			$url = $this->_base . $url;
 
 			$auth = base64_encode( 'api:' . $this->_apikey );
@@ -116,35 +121,32 @@
 		}
 
 
-        private function _execute($url, $action=REST_GET, $data=null, $headers = null ){
+		/**
+		 * @param $url
+		 * @param string $action
+		 * @param null $data
+		 * @param null $headers
+		 * @return response
+		 * @throws CommunicationException
+		 * @throws WebException
+		 */
+		private function _execute($url, $action=REST_GET, $data=null, $headers = null ){
             if ( $action == REST_GET ){
-                return $this->_getRequest($url, $headers, $data );
+                return $this->_getRequest($url, $headers);
             }elseif( $action == REST_CREATE ){
                 return $this->_postRequest($url, $headers, $data);
-            }
+            } else {
+            	return null;
+			}
         }
 
 
-        private function _header($headers){
-
-            if ( !isset($headers) ){
-                $headers = array();
-            }
-
-            $aHeader = array_merge(array(
-                /*"Content-type: text/xml;charset=\"utf-8\"",*/
-                "Authorization: Basic " . base64_encode("api:".$this->_apikey)
-                ), $headers);
-
-            return $aHeader;
-        }
-
-        /**
-        * Creates a simpleXML object from an XML string
-        * 
-        * @param string $string
-        * @return \SimpleXMLElement
-        */
+		/**
+		 * Creates a simpleXML object from an XML string
+		 *
+		 * @param string $string
+		 * @return \SimpleXMLElement|string
+		 */
         private function _create_xml_object($string){
             libxml_use_internal_errors(true);
             $doc = simplexml_load_string($string);
@@ -152,12 +154,8 @@
                 return $string;
             }
             $xml = new \SimpleXMLElement($string);
-            $namespaces = $xml->getDocNamespaces(); 
-            //$xml->registerXPathNamespace('ns', $namespaces['']);
             $xml->registerXPathNamespace('ns', '');
 
             return $xml;
         }
     }
-
-?>

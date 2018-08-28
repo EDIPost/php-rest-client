@@ -1,9 +1,8 @@
 <?php
     namespace EdipostService\Client\Builder;
-    use \EdipostService\Client as Client;
-    
-    
-    class ConsignmentBuilder{
+
+
+class ConsignmentBuilder{
         protected $id;
         protected $consigneeId;
         protected $consignorId;
@@ -125,6 +124,4 @@
             return $consignment; 
         }
         
-    }   
-    
-?>
+    }

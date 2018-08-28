@@ -2,114 +2,55 @@
     namespace EdipostService;
 
     // make sure we set up the environment
-    require_once( 'init.php' );
-    
-    
+use EdipostService\Client\Builder\ConsigneeBuilder;
+use EdipostService\Client\Builder\ConsignorBuilder;
+use EdipostService\Client\Product;
+use EdipostService\Client\Service;
+use EdipostService\ServiceConnection\CommunicationException;
+use EdipostService\ServiceConnection\ServiceConnection;
+use EdipostService\ServiceConnection\WebException;
 
-
-    interface iEdipostService{
-        /**
-        * Returns the default consignor for the customer. Most customers have only one consignor.
-        *
-        * @return the default consignor
-        */
-        public function getDefaultConsignor();
-
-
-        /**
-        * Creates a builder object used to build consignees
-        *
-        * @return a builder object
-        */
-        /*public function consigneeBuilder();*/
-
-
-        /**
-        * Get a consignee by it's ID.
-        *
-        * The ID can be found by searching for consignees by findConsignee, or when you create a new consignee
-        *
-        * @param consigneeID the ID of the consignee
-        * @return a consignee
-        */
-        /*   public function getConsignee( integer $consigneeID ); */
-
-
-        /**
-        * Search for consignees
-        *
-        * @param searchPhrase A phrase used when searching for consignees
-        * @return a list of consignees
-        */
-        /*   public function findConsignee( string $searchPhrase ); */
-
-
-        /**
-        * Creates a builder object used to build consignments
-        * 
-        * @return a builder object
-        */
-        /*   public function consignmentBuilder(); */
-
-
-        /**
-        * Get a consignment by it's ID
-        *
-        * The ID can be found by searching for consignments by findConsignment, or when you create a new consignment
-        *
-        * @param consignmentID the ID of the consignment
-        * @return a consignment
-        */
-        /*  public function getConsignment( integer $consignmentID ); */
-
-
-        /**
-        * Search for consignments
-        *
-        * @param searchPhrase A phrase used when searching for consignments
-        * @return a list of consignments
-        */
-        /*  public function findConsignment( string $searchPhrase ); */
-
-    }
+	require_once( 'init.php' );
 
 
 
-    class EdipostService implements iEdipostService{
+    class EdipostService {
+		/** @var ServiceConnection */
         private $conn = null;
-        private $connection_status = null;
-        
-        
-        /**
-        * The constructor
-        * 
-        * @param mixed $apikey
-        * @return EdipostService
-        */
-        public function __construct($apikey = null, $apiurl = 'https://api.pbshipment.com'){
-            if ( isset($apikey) ){
-                $this->connect($apikey, $apiurl);            
+
+
+		/**
+		 * The constructor
+		 *
+		 * @param mixed $apiKey
+		 * @param string $apiUrl
+		 */
+        public function __construct($apiKey = null, $apiUrl = 'https://api.pbshipment.com'){
+            if ( isset($apiKey) ){
+                $this->connect($apiKey, $apiUrl);
             }
-        } 
+        }
 
 
-        /**
-        * fetches the default consignor 
-        * 
-        * @return \EdipostService\Client\Consignor
-        */
-        public function getDefaultConsignor(){    
+		/**
+		 * Fetches the default consignor
+		 *
+		 * @return \EdipostService\Client\Consignor
+		 * @throws CommunicationException
+		 * @throws WebException
+		 */
+        public function getDefaultConsignor(){
             $url = "/consignor/default";
             $headers = array( "Accept: application/vnd.edipost.party+xml" );
-            
+
             $xml = $this->conn->get( $url, null, $headers );
-            
+
 
             if ( !$xml ){
                 return null;
             }
 
-            $cb = new \EdipostService\Client\Builder\ConsignorBuilder();
+            $cb = new ConsignorBuilder();
             $consignor = $cb->setID( $this->xv($xml,"//consignor/@id") )
                 ->setCompanyName( $this->xv($xml,"//consignor/companyName") )
                 ->setPostAddress( $this->xv($xml,"//consignor/postAddress/address") )
@@ -122,7 +63,7 @@
                 ->setContactCellPhone( $this->xv($xml,"//consignor/contact/cellphone") )
                 ->setContactPhone( $this->xv($xml,"//consignor/contact/telephone") )
                 ->setCountry($this->xv($xml,"//consignor/country"))
-                ->build();    
+                ->build();
 
             return $consignor;
         }
@@ -131,7 +72,10 @@
 		/**
 		 * fetches the available products for a given consignee
 		 *
-		 * @return \EdipostService\Client\Product[]
+		 * @param $consignorID
+		 * @return Product[]
+		 * @throws CommunicationException
+		 * @throws WebException
 		 */
 		public function getProducts( $consignorID ) {
 			$url = "/consignee/$consignorID/products";
@@ -148,13 +92,13 @@
 			$products = array();
 
 			foreach( $xml->xpath('/collection/entry') as $product ) {
-				$newProduct = new \EdipostService\Client\Product();
+				$newProduct = new Product();
 				$newProduct->setId( (string) $product->attributes()->id );
 				$newProduct->setName( (string) $product->attributes()->name );
 				$newProduct->setStatus( (string) $product->status );
 
 				foreach( $product->xpath( 'services/service' ) as $service ) {
-					$newService = new \EdipostService\Client\Service();
+					$newService = new Service();
 					$newService->setId( (string) $service->attributes()->id );
 					$newService->setName( (string) $service->attributes()->name );
 
@@ -172,7 +116,14 @@
 		/**
 		 * fetches the available products
 		 *
-		 * @return \EdipostService\Client\Product[]
+		 * @param $fromZipCode
+		 * @param $fromCountryCode
+		 * @param $toZipCode
+		 * @param $toCountryCode
+		 * @param $items
+		 * @return Product[]
+		 * @throws CommunicationException
+		 * @throws WebException
 		 */
 		public function getAvailableProducts( $fromZipCode, $fromCountryCode, $toZipCode, $toCountryCode, $items ) {
 			$url = "/product?fromZipCode=$fromZipCode&fromCountryCode=$fromCountryCode&toZipCode=$toZipCode&toCountryCode=$toCountryCode" . $this->getItemsUrlString( $items );
@@ -184,7 +135,7 @@
 
 			if( $xml && is_object( $xml ) ) {
 				foreach( $xml->xpath('/collection/entry') as $product ) {
-					$newProduct = new \EdipostService\Client\Product();
+					$newProduct = new Product();
 					$newProduct->setId( (string) $product->attributes()->id );
 					$newProduct->setName( (string) $product->attributes()->name );
 					$newProduct->setStatus( (string) $product->status );
@@ -194,7 +145,7 @@
 					$newProduct->setVat( (string) $product->vat );
 
 					if( $product->serviceId ) {
-						$newService = new \EdipostService\Client\Service();
+						$newService = new Service();
 						$newService->setId( (string) $product->serviceId );
 						$newProduct->addService( $newService );
 					}
@@ -216,27 +167,29 @@
 
 			return $urlString;
 		}
-        
-        
-        /**
-        * Creates a Consignee 
-        * 
-        * @param \EdipostService\Client\Consignee $consignee
-        * @return Consignee
-        */
+
+
+		/**
+		 * Creates a Consignee
+		 *
+		 * @param \EdipostService\Client\Consignee $consignee
+		 * @return bool|Client\Consignee|Client\Party
+		 * @throws CommunicationException
+		 * @throws WebException
+		 */
         public function createConsignee($consignee){
             $url = "/consignee";
             $headers = array(
                 'Accept: application/vnd.edipost.party+xml',
                 'Content-Type: application/vnd.edipost.party+xml'
             );
-            
+
             $xml = $this->conn->post( $url, new \SimpleXMLElement( $consignee->xml_serialize()), $headers );
-            
+
             if ( !$xml instanceof \SimpleXMLElement ){
                 return false;
             }
-            
+
             $party = $this->_buildParty($xml, PARTY_CONSIGNEE);
             return $party;
         }
@@ -245,8 +198,10 @@
 		/**
 		 * Get a Consignee by ID
 		 *
-		 * @param \EdipostService\Client\Consignee $consignee
-		 * @return Consignee
+		 * @param $consigneeId
+		 * @return bool|Client\Consignee|Client\Party
+		 * @throws CommunicationException
+		 * @throws WebException
 		 */
 		public function getConsignee( $consigneeId ){
 			$url = "/consignee/$consigneeId";
@@ -265,29 +220,31 @@
 
 			return $party;
 		}
-        
 
-        /**
-        * Creates a consignment
-        * 
-        * @param \EdipostService\Client\Consignment $consignment
-        * @return integer
-        */
+
+		/**
+		 * Creates a consignment
+		 *
+		 * @param \EdipostService\Client\Consignment $consignment
+		 * @return bool|Client\Consignment
+		 * @throws CommunicationException
+		 * @throws WebException
+		 */
         public function createConsignment($consignment){
             $url = "/consignment";
             $headers = array(
                 'Accept: application/vnd.edipost.consignment+xml',
                 'Content-Type: application/vnd.edipost.consignment+xml'
             );
-            
+
             $xml = $this->conn->post( $url, new \SimpleXMLElement( $consignment->xml_serialize()), $headers );
-            
+
             if ( !$xml instanceof \SimpleXMLElement ){
                 return false;
             }
-            
+
             $consignment->id = $this->xv($xml,"//consignment/@id");
-            $consignment->shipmentNumber = $this->xv($xml,"//consignment/shipmentNumber");           
+            $consignment->shipmentNumber = $this->xv($xml,"//consignment/shipmentNumber");
             $i=0;
             foreach( $xml->items->item as $k => $v ){
                 $consignment->items->items{$i}->setItemNumber( reset($v->itemNumber) );
@@ -301,7 +258,9 @@
 		 * Calculate postage for a consignment
 		 *
 		 * @param \EdipostService\Client\Consignment $consignment
-		 * @return integer
+		 * @return bool|Client\Consignment
+		 * @throws CommunicationException
+		 * @throws WebException
 		 */
 		public function calculatePostage($consignment){
 			$url = "/consignment/postage";
@@ -340,22 +299,26 @@
 			return $consignment;
 		}
 
-        
-        /**
-        * fetches the PDF data
-        * 
-        * @param mixed $consignment_id
-        */
+
+		/**
+		 * Fetches the PDF data
+		 *
+		 * @param $consignment_id
+		 * @param null $report
+		 * @return \SimpleXMLElement
+		 * @throws CommunicationException
+		 * @throws WebException
+		 */
         public function printConsignment($consignment_id, $report = null ){
             $url = "/consignment/$consignment_id/print";
-            
+
             if ( isset($report) ){
                 $url .= "?report=".$report;
             }
             $headers = array( "Accept: application/pdf" );
 
             $response = $this->conn->get( $url, null, $headers );
-            
+
             return $response;
         }
 
@@ -364,6 +327,10 @@
 		 * fetches the ZPL data
 		 *
 		 * @param mixed $consignment_id
+		 * @param null $report
+		 * @return \SimpleXMLElement
+		 * @throws CommunicationException
+		 * @throws WebException
 		 */
 		public function printConsignmentZpl($consignment_id, $report = null ){
 			$url = "/consignment/$consignment_id/print";
@@ -378,28 +345,28 @@
 			return $response;
 		}
 
-        
+
         /**
         * PRVATE FUNCTIONS
         */
-        
-        
-        /**
-        * Private method to build a party object
-        * 
-        * @param \SimpleXMLElement $xml
-        * @param string $type
-        * @return Party
-        */
+
+
+		/**
+		 * Private method to build a party object
+		 *
+		 * @param \SimpleXMLElement $xml
+		 * @param string $type
+		 * @return Client\Consignee|Client\Party
+		 */
         private function _buildParty( $xml, $type = PARTY_CONSIGNEE){
             $namespace = $type;
 
             if ( $type = PARTY_CONSIGNEE ){
-                $cb = new \EdipostService\Client\Builder\ConsigneeBuilder();
+                $cb = new ConsigneeBuilder();
             }else{
-                $cb = new \EdipostService\Client\Builder\ConsignorBuilder();
+                $cb = new ConsignorBuilder();
             }
-            
+
             $party = $cb->setID( $this->xv($xml,"//$namespace/@id") )
                 ->setCustomerNumber($this->xv($xml,"//$namespace/customerNumber") )
                 ->setCompanyName( $this->xv($xml,"//$namespace/companyName") )
@@ -414,7 +381,7 @@
                 ->setContactPhone( $this->xv($xml,"//$namespace/contact/telephone") )
                 ->setCountry($this->xv($xml,"//$namespace/country"))
                 ->build();
-            
+
             return $party;
         }
 
@@ -431,18 +398,18 @@
                 trigger_error( $error_msg, E_USER_ERROR );
             }
 
-            $this->conn = new \EdipostService\ServiceConnection\ServiceConnection( $apiKey, $apiUrl );
+            $this->conn = new ServiceConnection( $apiKey, $apiUrl );
         }
 
 
-        /**
-        * Fetches the correct value based on an x-path
-        * 
-        * @param \SimpleXMLElement $xml
-        * @param string $xpath
-        * @param string $default
-        * @return string|numeric
-        */
+		/**
+		 * Fetches the correct value based on an x-path
+		 *
+		 * @param \SimpleXMLElement $xml
+		 * @param $xpath
+		 * @param string $default
+		 * @return string
+		 */
         private function xv(&$xml,$xpath, $default=""){
             try{
                 $value = $xml->xpath($xpath);
@@ -456,4 +423,3 @@
         }
 
     }
-?>

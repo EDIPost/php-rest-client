@@ -7,6 +7,4 @@
         /** @XmlAttribute(string, id) */
         public $ID;
        
-    }    
-
-?>
+    }

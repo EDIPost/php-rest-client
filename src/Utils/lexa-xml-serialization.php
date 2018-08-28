@@ -16,7 +16,10 @@
         private $attrs = array(); // [attrName] -> array(propName, valueType)
         private $els = array();   // [elementName] -> array(propName, valueType)
 
-        /** @param mixed $class An instance or a class name */
+		/**
+		 * @param mixed $class An instance or a class name
+		 * @throws \ReflectionException
+		 */
         public function __construct($class) {
             $r = new \ReflectionClass($class);
             $this->shortName = $r->getShortName();
@@ -34,14 +37,21 @@
             }
         }
 
-        private function receiveXmlRoot($docComment) {
+		/**
+		 * @param $docComment
+		 * @return mixed
+		 */
+		private function receiveXmlRoot($docComment) {
             foreach(Annotation::parse($docComment) as $a) {
                 if($a->getName() == "root" && $a->getParamCount() > 0)
                     return $a->getParam(0);
             }
         }
 
-        private function processProperty(\ReflectionProperty $p) {
+		/**
+		 * @param \ReflectionProperty $p
+		 */
+		private function processProperty(\ReflectionProperty $p) {
             $registered = false;
             foreach(Annotation::parse($p->getDocComment()) as $a) {
                 if($a->getName() != "element" && $a->getName() != "attribute")
@@ -86,7 +96,11 @@
             }
         }
 
-        private function resolveType($type) {
+		/**
+		 * @param $type
+		 * @return string
+		 */
+		private function resolveType($type) {
             if(!$type || $type == "string")
                 return "string";
             if($type == "int" || $type == "integer")
@@ -103,31 +117,50 @@
             return ltrim($type, "\\");
         }
 
-        function getClassName() {
+		/**
+		 * @return string
+		 */
+		function getClassName() {
             if($this->namespace)
                 return $this->namespace . "\\" . $this->shortName;
             return $this->shortName;
         }
 
-        function getNamespace() {
+		/**
+		 * @return string
+		 */
+		function getNamespace() {
             return $this->namespace;
         }
 
-        function getXmlRoot() {
+		/**
+		 * @return mixed|string
+		 */
+		function getXmlRoot() {
             if(!$this->xmlRoot)
                 return $this->shortName;
             return $this->xmlRoot;
         }
 
-        function getPropertyNames() {
+		/**
+		 * @return array
+		 */
+		function getPropertyNames() {
             return array_keys($this->props);
         }
 
-        function getAttributeNames() {
+		/**
+		 * @return array
+		 */
+		function getAttributeNames() {
             return array_keys($this->attrs);
         }
 
-        function getAttributeNamesForProperty($propName) {
+		/**
+		 * @param $propName
+		 * @return array
+		 */
+		function getAttributeNamesForProperty($propName) {
             $result = array();
             foreach($this->attrs as $attrName => $data) {
                 if($data[0] == $propName)
@@ -136,11 +169,18 @@
             return $result;
         }
 
-        function getElementNames() {
+		/**
+		 * @return array
+		 */
+		function getElementNames() {
             return array_keys($this->els);
         }
 
-        function getElementNamesForProperty($propName) {
+		/**
+		 * @param $propName
+		 * @return array
+		 */
+		function getElementNamesForProperty($propName) {
             $result = array();
             foreach($this->els as $elementName => $data) {
                 if($data[0] == $propName)
@@ -149,75 +189,137 @@
             return $result;
         }
 
-        function getPropertyValue($obj, $propName) {
+		/**
+		 * @param $obj
+		 * @param $propName
+		 * @return mixed
+		 */
+		function getPropertyValue($obj, $propName) {
             return $this->reflectors[$propName]->getValue($obj);
         }
 
-        function setPropertyValue($obj, $propName, $value) {
+		/**
+		 * @param $obj
+		 * @param $propName
+		 * @param $value
+		 */
+		function setPropertyValue($obj, $propName, $value) {
             $this->reflectors[$propName]->setValue($obj, $value);
         }
 
-        function getAttributeName($propName, $valueType) {
+		/**
+		 * @param $propName
+		 * @param $valueType
+		 * @return null
+		 */
+		function getAttributeName($propName, $valueType) {
             if(!$this->hasAttributeForProperty($propName, $valueType))
                 return null;
             return $this->props[$propName][$valueType][0];
         }
 
-        function getElementName($propName, $valueType) {
+		/**
+		 * @param $propName
+		 * @param $valueType
+		 * @return null
+		 */
+		function getElementName($propName, $valueType) {
             if(!$this->hasElementForProperty($propName, $valueType))
                 return null;
             return $this->props[$propName][$valueType][0];
         }
 
-        function getPropertyNameForAttribute($attrName) {
+		/**
+		 * @param $attrName
+		 * @return null
+		 */
+		function getPropertyNameForAttribute($attrName) {
             if(!$this->hasPropertyForAttribute($attrName))
                 return null;
             return $this->attrs[$attrName][0];
         }
 
-        function getPropertyNameForElement($elementName) {
+		/**
+		 * @param $elementName
+		 * @return null
+		 */
+		function getPropertyNameForElement($elementName) {
             if(!$this->hasPropertyForElement($elementName))
                 return null;
             return $this->els[$elementName][0];
         }
 
-        function getPropertyTypeForAttribute($attrName) {
+		/**
+		 * @param $attrName
+		 * @return null
+		 */
+		function getPropertyTypeForAttribute($attrName) {
             if(!$this->hasPropertyForAttribute($attrName))
                 return null;
             return $this->attrs[$attrName][1];
         }
 
-        function getPropertyTypeForElement($elementName) {
+		/**
+		 * @param $elementName
+		 * @return null
+		 */
+		function getPropertyTypeForElement($elementName) {
             if(!$this->hasPropertyForElement($elementName))
                 return null;
             return $this->els[$elementName][1];
         }
 
-        private function hasXmlNameForProperty($propName, $valueType) {
+		/**
+		 * @param $propName
+		 * @param $valueType
+		 * @return bool
+		 */
+		private function hasXmlNameForProperty($propName, $valueType) {
             return array_key_exists($propName, $this->props) && array_key_exists($valueType, $this->props[$propName]);
         }
 
-        private function hasAttributeForProperty($propName, $valueType) {
+		/**
+		 * @param $propName
+		 * @param $valueType
+		 * @return bool
+		 */
+		private function hasAttributeForProperty($propName, $valueType) {
             if(!$this->hasXmlNameForProperty($propName, $valueType))
                 return false;
             return !$this->props[$propName][$valueType][1];
         }
 
-        private function hasElementForProperty($propName, $valueType) {
+		/**
+		 * @param $propName
+		 * @param $valueType
+		 * @return bool
+		 */
+		private function hasElementForProperty($propName, $valueType) {
             if(!$this->hasXmlNameForProperty($propName, $valueType))
                 return false;
             return $this->props[$propName][$valueType][1];
         }
 
-        private function hasPropertyForAttribute($attrName) {
+		/**
+		 * @param $attrName
+		 * @return bool
+		 */
+		private function hasPropertyForAttribute($attrName) {
             return array_key_exists($attrName, $this->attrs);
         }
 
-        private function hasPropertyForElement($elementName) {
+		/**
+		 * @param $elementName
+		 * @return bool
+		 */
+		private function hasPropertyForElement($elementName) {
             return array_key_exists($elementName, $this->els);
         }
 
-        private function fail($message) {
+		/**
+		 * @param $message
+		 */
+		private function fail($message) {
             throw new \RuntimeException("Xml metadata error for {$this->getClassName()}: $message");
         }
 
@@ -233,11 +335,18 @@
             return self::$instance;
         }
 
-        static function set(ClassMetaStore $store) {
+		/**
+		 * @param ClassMetaStore $store
+		 */
+		static function set(ClassMetaStore $store) {
             self::$instance = $store;
         }
 
-        /** @return ClassMeta */
+		/**
+		 * @param $class
+		 * @return ClassMeta
+		 * @throws \ReflectionException
+		 */
         static function getMeta($class) {
             if(is_object($class))
                 $class = get_class($class);
@@ -273,8 +382,13 @@
     class XmlSerializer {
 
         // Serialization
-        
-        static function serialize($obj) {
+
+		/**
+		 * @param $obj
+		 * @return \DOMDocument
+		 * @throws \ReflectionException
+		 */
+		static function serialize($obj) {
             $doc = new \DOMDocument('1.0', 'utf-8');
             $root = $doc->createElement(ClassMetaStore::getMeta($obj)->getXmlRoot());
             self::serializeObject($obj, $root);
@@ -282,7 +396,12 @@
             return $doc;
         }
 
-        private static function serializeObject($obj, \DOMElement $target) {
+		/**
+		 * @param $obj
+		 * @param \DOMElement $target
+		 * @throws \ReflectionException
+		 */
+		private static function serializeObject($obj, \DOMElement $target) {
             $meta = ClassMetaStore::getMeta($obj);
             foreach($meta->getPropertyNames() as $propName) {
                 $value = $meta->getPropertyValue($obj, $propName);
@@ -299,7 +418,14 @@
             }
         }
 
-        private static function serializeProperty(ClassMeta $meta, $propName, $value, \DOMElement $target) {
+		/**
+		 * @param ClassMeta $meta
+		 * @param $propName
+		 * @param $value
+		 * @param \DOMElement $target
+		 * @throws \ReflectionException
+		 */
+		private static function serializeProperty(ClassMeta $meta, $propName, $value, \DOMElement $target) {
             if($value === null)
                 return;
             
@@ -326,17 +452,29 @@
                 throw new \RuntimeException("Don't know how to serialize value of type '$valueType' for property '$propName' of class '{$meta->getClassName()}'");
         }
 
-        private static function getValueType($value) {
+		/**
+		 * @param $value
+		 * @return string
+		 */
+		private static function getValueType($value) {
             if(is_object($value))
                 return get_class($value);
             return gettype($value);
         }
 
-        private static function isObject($value) {
+		/**
+		 * @param $value
+		 * @return bool
+		 */
+		private static function isObject($value) {
             return is_object($value) && !($value instanceof \DateTime);
         }
 
-        private static function formatAtomicValue($value) {
+		/**
+		 * @param $value
+		 * @return string
+		 */
+		private static function formatAtomicValue($value) {
             if(is_bool($value))
                 return $value ? "true" : "false";
 
@@ -353,14 +491,25 @@
        
         // Unserialization
 
-        static function unserialize(\DOMDocument $doc, $className) {            
+		/**
+		 * @param \DOMDocument $doc
+		 * @param $className
+		 * @return mixed
+		 * @throws \ReflectionException
+		 */
+		static function unserialize(\DOMDocument $doc, $className) {
             $result = new $className;
             self::unserializeObject($result, $doc->documentElement);
             return $result;
         }
 
 
-        private static function unserializeObject($obj, \DOMElement $source) {
+		/**
+		 * @param $obj
+		 * @param \DOMElement $source
+		 * @throws \ReflectionException
+		 */
+		private static function unserializeObject($obj, \DOMElement $source) {
             $meta = ClassMetaStore::getMeta($obj);
 
             $bag = array();
@@ -450,7 +599,12 @@
 
         // Schema generation
 
-        static function generateSchema($className) {
+		/**
+		 * @param $className
+		 * @return \DOMDocument
+		 * @throws \ReflectionException
+		 */
+		static function generateSchema($className) {
             $g = new SchemaGenerator();
             return $g->generate($className);
         }
@@ -461,7 +615,10 @@
 
     class Annotation {
 
-        /** @return array */
+		/**
+		 * @param $docComment
+		 * @return array
+		 */
         static function parse($docComment) {
             preg_match_all("/\\@xml(element|attribute|root)\\s*(?:\\((.*?)\\))?/is", $docComment, $matches, PREG_SET_ORDER);
             $result = array();
@@ -481,15 +638,25 @@
         protected function __construct() {
         }
 
-        function getName() {
+		/**
+		 * @return mixed
+		 */
+		function getName() {
             return $this->name;
         }
 
-        function getParamCount() {
+		/**
+		 * @return int
+		 */
+		function getParamCount() {
             return count($this->params);
         }
 
-        function getParam($index) {
+		/**
+		 * @param $index
+		 * @return mixed
+		 */
+		function getParam($index) {
             return $this->params[$index];
         }
 
@@ -499,7 +666,12 @@
         private $pendingTypes;
         private $generatedTypes;
 
-        function generate($rootClassName) {
+		/**
+		 * @param $rootClassName
+		 * @return \DOMDocument
+		 * @throws \ReflectionException
+		 */
+		function generate($rootClassName) {
             $doc = new \DOMDocument();
 
             $root = $doc->createElement("xs:schema");
@@ -528,7 +700,13 @@
             return $doc;
         }
 
-        private function createSchemaNodeForObject(\DOMDocument $doc, $obj) {
+		/**
+		 * @param \DOMDocument $doc
+		 * @param $obj
+		 * @return \DOMElement
+		 * @throws \ReflectionException
+		 */
+		private function createSchemaNodeForObject(\DOMDocument $doc, $obj) {
             $meta = ClassMetaStore::getMeta($obj);
 
             $complexType = $doc->createElement("xs:complexType");

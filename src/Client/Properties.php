@@ -15,4 +15,3 @@
             $this->properties[] = $property;
         }
     }
-?>

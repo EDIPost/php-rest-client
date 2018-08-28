@@ -63,12 +63,11 @@
 			return $this->cost;
 		}
 
-        
-        /**
-        * Sets the connotenumber
-        * 
-        * @param string $no
-        */
+
+		/**
+		 * Sets the connotenumber
+		 * @param $no
+		 */
         public function setItemNumber( $no ){
             $this->itemNumber = $no;
         }
@@ -81,4 +80,3 @@
             return $this->itemNumber;
         }
     }
-?>

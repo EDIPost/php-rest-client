@@ -3,8 +3,11 @@
     use \EdipostService\Client as Client;
     
     class ConsignorBuilder extends PartyBuilder{
-        
-        public function build() {
+
+		/**
+		 * @return Client\Consignor
+		 */
+		public function build() {
             $po = new Client\Address();
             $po->setAddress( $this->postAddress );
             $po->setZipCode( $this->postZip );
@@ -35,6 +38,4 @@
 
 
         
-    }   
-    
-?>
+    }

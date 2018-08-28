@@ -15,4 +15,3 @@
             $this->services[] = $service;
         }
     }
-?>

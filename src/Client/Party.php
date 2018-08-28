@@ -1,118 +1,115 @@
 <?php
-    namespace EdipostService\Client;
-    
-    
+
+namespace EdipostService\Client;
 
 
-    /** @XmlRoot(Party) */
-    class Party extends \EdipostService\ServiceConnection\Communication{
-        public $ID;
-        /** @XmlElement(string, companyName) */
-        public $companyName;
-        /** @XmlElement(string, customerNumber) */
-        public $customerNumber = "0";
-        /** @XmlElement(string, country) */
-        public $country;
+/** @XmlRoot(Party) */
+class Party extends \EdipostService\ServiceConnection\Communication {
+	public $ID;
+	/** @XmlElement(string, companyName) */
+	public $companyName;
+	/** @XmlElement(string, customerNumber) */
+	public $customerNumber = "0";
+	/** @XmlElement(string, country) */
+	public $country;
 
-        /** @var EdipostService\Client\Address */
-        /** @XmlElement(Address, streetAddress) */
-        public $streetAddress = null;
+	/** @XmlElement(Address, streetAddress) */
+	public $streetAddress = null;
 
-        /** @var EdipostService\Client\Address */
-        /** @XmlElement(Address, postAddress) */
-        public $postAddress = null;
+	/** @XmlElement(Address, postAddress) */
+	public $postAddress = null;
 
-        /** @var EdipostService\Client\Contact */
-        /** @XmlElement(Contact, contact) */
-        public $contact = null;
-        
-
-        public function getID() {
-            return $this->ID;
-        }
+	/** @XmlElement(Contact, contact) */
+	public $contact = null;
 
 
-        public function setID( $ID ) {
-            $this->ID = $ID;
-        }
+	public function getID() {
+		return $this->ID;
+	}
 
 
-        public function getCompanyName() {
-            return $this->companyName;
-        }
+	public function setID($ID) {
+		$this->ID = $ID;
+	}
 
 
-        public function setCompanyName( $companyName ) {
-            $this->companyName = $companyName;
-        }
+	public function getCompanyName() {
+		return $this->companyName;
+	}
 
 
-        public function getCustomerNumber() {
-            return $this->customerNumber;
-        }
+	public function setCompanyName($companyName) {
+		$this->companyName = $companyName;
+	}
 
 
-        public function setCustomerNumber( $customerNumber ) {
-            $this->customerNumber = $customerNumber;
-        }
+	public function getCustomerNumber() {
+		return $this->customerNumber;
+	}
 
 
-        public function getCountry() {
-            return $this->country;
-        }
+	public function setCustomerNumber($customerNumber) {
+		$this->customerNumber = $customerNumber;
+	}
 
 
-        public function setCountry( $country ) {
-            $this->country = $country;
-        }
-
-        /**
-        * Gets the streetAddress object
-        * 
-        * @return Address
-        */
-        public function getStreetAddress() {
-            return $this->streetAddress;
-        }
-
-        /**
-        * Sets the address object
-        * 
-        * @param Address $streetAddress
-        */
-        public function setStreetAddress( \EdipostService\Client\Address $streetAddress ) {
-            $this->streetAddress = $streetAddress;
-        }
+	public function getCountry() {
+		return $this->country;
+	}
 
 
-        public function getPostAddress() {
-            return $this->postAddress;
-        }
+	public function setCountry($country) {
+		$this->country = $country;
+	}
+
+	/**
+	 * Gets the streetAddress object
+	 *
+	 * @return Address
+	 */
+	public function getStreetAddress() {
+		return $this->streetAddress;
+	}
+
+	/**
+	 * Sets the address object
+	 *
+	 * @param Address $streetAddress
+	 */
+	public function setStreetAddress(Address $streetAddress) {
+		$this->streetAddress = $streetAddress;
+	}
 
 
-        public function setPostAddress( \EdipostService\Client\Address $postAddress ) {
-            $this->postAddress = $postAddress;
-        }
+	public function getPostAddress() {
+		return $this->postAddress;
+	}
 
 
-        public function getContact() {
-            return $this->contact;
-        }
+	public function setPostAddress(Address $postAddress) {
+		$this->postAddress = $postAddress;
+	}
 
 
-        public function setContact( \EdipostService\Client\Contact $contact ) {
-            $this->contact = $contact;
-        }
+	public function getContact() {
+		return $this->contact;
+	}
 
 
-        public function save() {
-            //return $this->Locator.resolve( ConsigneeService.class ).saveConsignee( this );
-        }
+	/**
+	 * @param \EdipostService\Client\Contact $contact
+	 */
+	public function setContact(Contact $contact) {
+		$this->contact = $contact;
+	}
 
 
-        public function remove() {
-            //return $this->Locator.resolve( ConsigneeService.class ).removeConsignee( getID() );
-        } 
-    }    
+	public function save() {
 
-?>
+	}
+
+
+	public function remove() {
+
+	}
+}
