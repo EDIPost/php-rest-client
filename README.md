@@ -11,8 +11,11 @@ Client library for Edipost REST API. The client library supports the most common
 
 ### Prerequisites
 
-* PHP
-* mod_curl
+* PHP 5.5 / PHP 7.x
+* ext-simplexml
+* ext-libxml
+* ext-mbstring
+* ext-dom
 
 
 ## Development setup
