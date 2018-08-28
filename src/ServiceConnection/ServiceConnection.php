@@ -71,81 +71,49 @@
             }
 
             return false;       
-        }  
-
-
-
-        /**
-        * Create a POST request
-        * 
-        * @param string $url
-        * @param mixed $headers
-        * @param string/xml $body
-        */
-        private function _postRequest( $url, $headers, $body ) {
-            $conn = curl_init();
-            curl_setopt($conn, CURLOPT_URL, $this->_base . $url  );
-            curl_setopt($conn, CURLOPT_FOLLOWLOCATION, TRUE);
-            curl_setopt($conn, CURLOPT_USERPWD, "api:". $this->_apikey);
-            curl_setopt($conn, CURLOPT_HTTPHEADER, $headers);
-            curl_setopt($conn, CURLOPT_POSTFIELDS, $body );
-            curl_setopt($conn, CURLOPT_POST, TRUE);
-            curl_setopt($conn, CURLINFO_HEADER_OUT, true);
-            curl_setopt($conn, CURLOPT_RETURNTRANSFER, TRUE);
-            curl_setopt($conn, CURLOPT_ENCODING, '');
-            curl_setopt($conn, CURLOPT_TIMEOUT, 15);
-
-            // Handle connection errors
-			if( ($data = curl_exec($conn)) === false) {
-				$curlError = curl_error($conn);
-				curl_close($conn);
-
-				throw new CommunicationException( $curlError );
-			}
-
-            $data = curl_exec($conn);
-            $httpStatus = curl_getinfo($conn, CURLINFO_HTTP_CODE);
-			curl_close($conn);
-
-			// Handle HTTP errors
-            if( $httpStatus != 200 && $httpStatus != 201 ) {
-				throw new WebException( $data, $httpStatus );
-            }
-
-            return new response($httpStatus, $data);
         }
 
 
-        private function _getRequest( $url, $headers, $body = null ){
-            $conn = curl_init();
-            curl_setopt($conn, CURLOPT_URL, $this->_base . $url  );
-            curl_setopt($conn, CURLOPT_CONNECTTIMEOUT, 100);
-            curl_setopt($conn, CURLOPT_TIMEOUT,        100);
-            curl_setopt($conn, CURLOPT_ENCODING,'gzip');
-            curl_setopt($conn, CURLOPT_RETURNTRANSFER, true );
-            curl_setopt($conn, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($conn, CURLOPT_SSL_VERIFYHOST, false);
-            curl_setopt($conn, CURLOPT_HTTPHEADER,  $this->_header($headers) );
-            curl_setopt($conn, CURLOPT_CUSTOMREQUEST, REST_GET );
+		/**
+		 * Create a POST request
+		 *
+		 * @param string $url
+		 * @param mixed $headers
+		 * @param $body
+		 * @return response
+		 * @throws CommunicationException
+		 * @throws WebException
+		 */
+		private function _postRequest( $url, $headers, $body ) {
+			$url = $this->_base . $url;
 
-			// Handle connection errors
-            if( ($data = curl_exec($conn)) === false) {
-                $curlError = curl_error($conn);
-                curl_close($conn);
+			$auth = base64_encode( 'api:' . $this->_apikey );
+			$headers[] = "Authorization: Basic $auth";
 
-                throw new CommunicationException( $curlError );
-            }
+			$httpClient = new HttpClient();
+			return $httpClient->post( $url, $headers, $body );
+		}
 
-			$httpStatus = curl_getinfo($conn, CURLINFO_HTTP_CODE);
-			curl_close($conn);
 
-			// Handle HTTP errors
-			if( $httpStatus != 200 ) {
-				throw new WebException( $data, $httpStatus );
-			}
+		/**
+		 * Create a GET request
+		 *
+		 * @param string $url
+		 * @param mixed $headers
+		 * @param null $body
+		 * @return response
+		 * @throws CommunicationException
+		 * @throws WebException
+		 */
+		private function _getRequest( $url, $headers, $body = null ) {
+			$url = $this->_base . $url;
 
-            return new response($httpStatus, $data);
-        }
+			$auth = base64_encode( 'api:' . $this->_apikey );
+			$headers[] = "Authorization: Basic $auth";
+
+			$httpClient = new HttpClient();
+			return $httpClient->get( $url, $headers );
+		}
 
 
         private function _execute($url, $action=REST_GET, $data=null, $headers = null ){
@@ -192,17 +160,4 @@
         }
     }
 
-
-    class response{
-        /** @var string */
-        public $data = "";
-
-        /** @var integer */
-        public $code = 0;
-
-        public function __construct($code, $data = "" ){
-            $this->code = $code;
-            $this->data = $data;
-        }
-    }    
 ?>
