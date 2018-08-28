@@ -1,4 +1,5 @@
 <?php
+
 namespace EdipostService\Client;
 
 /** @XmlRoot(product) */
@@ -17,12 +18,12 @@ class Product {
 	private $services = array();
 
 
-	public function addService( $service ) {
-		$this->services[ ] = $service;
+	public function addService($service) {
+		$this->services[] = $service;
 	}
 
 
-	public function addServices( $services ) {
+	public function addServices($services) {
 		$this->services = $services;
 	}
 
@@ -32,7 +33,7 @@ class Product {
 	}
 
 
-	public function setId( $id ) {
+	public function setId($id) {
 		$this->id = (int)$id;
 	}
 
@@ -42,7 +43,7 @@ class Product {
 	}
 
 
-	public function setName( $name ) {
+	public function setName($name) {
 		$this->name = $name;
 	}
 
@@ -52,7 +53,7 @@ class Product {
 	}
 
 
-	public function setDescription( $description ) {
+	public function setDescription($description) {
 		$this->description = $description;
 	}
 
@@ -62,7 +63,7 @@ class Product {
 	}
 
 
-	public function setStatus( $status ) {
+	public function setStatus($status) {
 		$this->status = $status;
 	}
 
@@ -77,7 +78,7 @@ class Product {
 	}
 
 
-	public function setTransporter( $transporter ) {
+	public function setTransporter($transporter) {
 		$this->transporter = $transporter;
 	}
 
@@ -87,7 +88,7 @@ class Product {
 	}
 
 
-	public function setCost( $cost ) {
+	public function setCost($cost) {
 		$this->cost = $cost;
 	}
 
@@ -97,7 +98,7 @@ class Product {
 	}
 
 
-	public function setVat( $vat ) {
+	public function setVat($vat) {
 		$this->vat = $vat;
 	}
 

@@ -1,46 +1,47 @@
 <?php
-    namespace EdipostService\Client;
 
-    /** @XmlRoot(property) */
-    class Property {
-        /** @XmlAttribute(string, key) */
-        private $key;
+namespace EdipostService\Client;
 
-
-        /** @XmlAttribute(string, value) */
-        private $value;
+/** @XmlRoot(property) */
+class Property {
+	/** @XmlAttribute(string, key) */
+	private $key;
 
 
-		/**
-		 * @param mixed $key
-		 */
-		public function setKey( $key ) {
-			$this->key = $key;
-		}
+	/** @XmlAttribute(string, value) */
+	private $value;
 
 
-		/**
-		 * @return mixed
-		 */
-		public function getKey() {
-			return $this->key;
-		}
+	/**
+	 * @param mixed $key
+	 */
+	public function setKey($key) {
+		$this->key = $key;
+	}
 
 
-		/**
-		 * @param mixed $value
-		 */
-		public function setValue( $value ) {
-			$this->value = $value;
-		}
+	/**
+	 * @return mixed
+	 */
+	public function getKey() {
+		return $this->key;
+	}
 
 
-		/**
-		 * @return mixed
-		 */
-		public function getValue() {
-			return $this->value;
-		}
+	/**
+	 * @param mixed $value
+	 */
+	public function setValue($value) {
+		$this->value = $value;
+	}
 
 
-    }
+	/**
+	 * @return mixed
+	 */
+	public function getValue() {
+		return $this->value;
+	}
+
+
+}
