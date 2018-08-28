@@ -419,25 +419,19 @@
         }
 
 
-        /**
-        * Connects to the api server
-        * 
-        * @param string $apikey
-        * @return boolean connection_status
-        */
-        private function connect($apikey, $apiurl){
-            if ( empty($apikey) ){
+		/**
+		 * Connects to the api server
+		 *
+		 * @param string $apiKey
+		 * @param $apiUrl
+		 */
+        private function connect( $apiKey, $apiUrl ){
+            if ( empty($apiKey) ){
                 $error_msg = "Invalid API key #404UC#";
                 trigger_error( $error_msg, E_USER_ERROR );
             }
 
-            $this->conn = new \EdipostService\ServiceConnection\ServiceConnection($apikey,$apiurl);
-            if(( $this->connection_status = $this->conn->entryPoint()) !== true ){
-                $error_msg = "No connection to API server #404UC#";
-                trigger_error( $error_msg, E_USER_ERROR );
-            } 
-
-            return $this->connection_status;
+            $this->conn = new \EdipostService\ServiceConnection\ServiceConnection( $apiKey, $apiUrl );
         }
 
 
