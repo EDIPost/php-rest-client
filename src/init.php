@@ -37,7 +37,7 @@ function autoLoad() {
 	}
 
 
-	$objects = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path), \ RecursiveIteratorIterator::SELF_FIRST);
+	$objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path), RecursiveIteratorIterator::SELF_FIRST);
 	foreach ($objects as $name => $object) {
 		if (substr($object->getBasename(), strpos($object->getBasename(), ".")) == '.php') {
 			if (!stristr($object->getBasename(), 'test')) {
