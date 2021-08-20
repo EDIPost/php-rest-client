@@ -5,6 +5,7 @@ namespace EdipostService;
 // make sure we set up the environment
 use EdipostService\Client\Builder\ConsigneeBuilder;
 use EdipostService\Client\Builder\ConsignorBuilder;
+use EdipostService\Client\Consignor;
 use EdipostService\Client\Product;
 use EdipostService\Client\Service;
 use EdipostService\ServiceConnection\CommunicationException;
@@ -67,6 +68,37 @@ class EdipostService {
 
 		return $consignor;
 	}
+
+
+    /**
+     * fetches all consignors
+     *
+     * @return Consignor[]
+     * @throws CommunicationException
+     * @throws WebException
+     */
+    public function getConsignors() {
+        $url = "/consignor";
+        $headers = array("Accept: application/vnd.edipost.collection+xml");
+
+        $xml = $this->conn->get($url, null, $headers);
+
+        if (!$xml) {
+            return null;
+        }
+
+        $consignors = array();
+
+        foreach ($xml->xpath('/collection/entry') as $consignor) {
+            $newConsignor = new Consignor();
+            $newConsignor->setId((string)$consignor->attributes()->id);
+            $newConsignor->setCompanyName((string)$consignor->companyName);
+
+            $consignors[] = $newConsignor;
+        }
+
+        return $consignors;
+    }
 
 
 	/**
