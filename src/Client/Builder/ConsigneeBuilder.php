@@ -9,9 +9,11 @@ class ConsigneeBuilder {
 	private $companyName;
 	private $customerNumber;
 	private $streetAddress;
+	private $streetAddress2;
 	private $streetZip;
 	private $streetCity;
 	private $postAddress;
+	private $postAddress2;
 	private $postZip;
 	private $postCity;
 	private $country;
@@ -50,6 +52,12 @@ class ConsigneeBuilder {
 	}
 
 
+    public function setStreetAddress2($streetAddress2) {
+        $this->streetAddress2 = $streetAddress2;
+        return $this;
+    }
+
+
 	public function setStreetZip($streetZip) {
 		$this->streetZip = $streetZip;
 		return $this;
@@ -66,6 +74,12 @@ class ConsigneeBuilder {
 		$this->postAddress = $postAddress;
 		return $this;
 	}
+
+
+    public function setPostAddress2($postAddress2) {
+        $this->postAddress2 = $postAddress2;
+        return $this;
+    }
 
 
 	public function setPostZip($postZip) {
@@ -125,11 +139,13 @@ class ConsigneeBuilder {
 	public function build() {
 		$po = new Client\Address();
 		$po->setAddress($this->postAddress);
+		$po->setAddress2($this->postAddress2);
 		$po->setZipCode($this->postZip);
 		$po->setCity($this->postCity);
 
 		$sa = new Client\Address();
 		$sa->setAddress($this->streetAddress);
+		$sa->setAddress2($this->streetAddress2);
 		$sa->setZipCode($this->streetZip);
 		$sa->setCity($this->streetCity);
 

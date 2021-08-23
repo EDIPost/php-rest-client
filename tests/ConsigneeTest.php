@@ -29,16 +29,18 @@ class ConsigneeTest extends TestCase {
 		$consignee = $builder
 			->setCompanyName( 'MyCompany AS' )
 			->setCustomerNumber( '1234' )
-			->setPostAddress( 'MyPostAddress' )
-			->setPostZip( '2847' )
-			->setPostCity( 'Kolbu' )
-			->setStreetAddress( 'MyStreetAddress' )
-			->setStreetZip( '2847' )
-			->setStreetCity( 'Kolbu' )
+			->setPostAddress( 'Post address line #1' )
+            ->setPostAddress2('Post address line #2')
+			->setPostZip( '2805' )
+			->setPostCity( 'Gjøvik' )
+			->setStreetAddress( 'Street address line #1' )
+            ->setStreetAddress2('Street address line #2')
+			->setStreetZip( '2815' )
+			->setStreetCity( 'Gjøvik' )
 			->setContactName( 'MyContact' )
-			->setContactEmail( '' )
-			->setContactPhone( '' )
-			->setContactCellPhone( '' )
+			->setContactEmail( 'contact@mail.com' )
+			->setContactPhone( '61167891' )
+			->setContactCellPhone( '92929292' )
 			->setContactTelefax( '' )
 			->setCountry( 'NO' )
 			->build();
@@ -49,13 +51,13 @@ class ConsigneeTest extends TestCase {
 		$this->assertEquals( '1234', $newConsignee->customerNumber );
 		$this->assertEquals( 'MyCompany AS', $newConsignee->companyName );
 
-		$this->assertEquals( 'MyStreetAddress', $newConsignee->streetAddress->address );
-		$this->assertEquals( '2847', $newConsignee->streetAddress->zipCode );
-		$this->assertEquals( 'Kolbu', $newConsignee->streetAddress->city );
+		$this->assertEquals( 'Street address line #1', $newConsignee->streetAddress->address );
+		$this->assertEquals( '2815', $newConsignee->streetAddress->zipCode );
+		$this->assertEquals( 'Gjøvik', $newConsignee->streetAddress->city );
 
-		$this->assertEquals( 'MyPostAddress', $newConsignee->postAddress->address );
-		$this->assertEquals( '2847', $newConsignee->postAddress->zipCode );
-		$this->assertEquals( 'Kolbu', $newConsignee->postAddress->city );
+		$this->assertEquals( 'Post address line #1', $newConsignee->postAddress->address );
+		$this->assertEquals( '2805', $newConsignee->postAddress->zipCode );
+		$this->assertEquals( 'Gjøvik', $newConsignee->postAddress->city );
 
 		$this->assertEquals( 'MyContact', $newConsignee->contact->name );
 	}
